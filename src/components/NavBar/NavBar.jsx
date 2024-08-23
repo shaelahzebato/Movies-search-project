@@ -5,7 +5,7 @@ import moi from '../../images/moii.png'
 
 function NavBar() {
 
-    const [isConnected, setIsConnected] = useState(false)
+    const [isConnected, setIsConnected] = useState(true)
     const [isOpen, setIsOpen] = useState(false);
     const [isReOpen, setIsReOpen] = useState(false);
 
