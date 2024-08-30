@@ -16,19 +16,62 @@ function MovieHomePage() {
         setMovieNameEntered(e.target.value)
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault()
+    }
 
+
+    const [userData, setUserData] = useState('');
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setError('Token non trouvé !');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://symbian.stvffmn.com:10050/api/v1/me', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("data =>>> ", data);
+                    setUserData(data);
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.message);
+                }
+            } catch (err) {
+                setError('Erreurrrrrr.');
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+   
+    
     return (
         <div className='h-screen bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
             <NavBar/>
             <div className="h-[85%] lg:w-4/6 mx-auto flex flex-col gap-10 items-center justify-center">
                 <h1 className='text-white text-3xl lg:text-4xl flex flex-col items-center justify-center gap-2'>
+                    {userData ? <p className='mb-10 text-center'>Bonjour <strong className='font-bold text-orange-500'>{userData?.datas?.nom}...</strong></p> : ""}
                     <p className='text-center'>Bienvenue sur <strong className='text-orange-500'>BoxFun...</strong></p>
                     <p className='text-center'>Recherchez vos films, des plus epoustouflants</p>
                     <p className='text-center'>ici <FontAwesomeIcon className='text-orange-500 font-semibold' icon={faAngleDoubleDown}/>!</p>
                 </h1>
-                <form className="w-full md:w-3/6 lg:w-3/6 mx-auto px-4">
+                <form onSubmit={e => handleSubmit(e)} className="w-full md:w-3/6 lg:w-3/6 mx-auto px-4">
                     <div className=" flex flex-col gap-4">
-                        <input type="text" value={movieNameEntered} onChange={handleChange} className='border p-2 focus:outline-none' placeholder="Entrez le nom d'un film..."/>
+                        <input type="text" value={movieNameEntered} onChange={handleChange} className='border p-2 rounded-sm focus:outline-none' placeholder="Entrez le nom d'un film..."/>
                         <Link to={`/movies-results?name=${movieNameEntered}`} className='bg-orange-500 rounded-md text-white borde p-3 w-full text-center hover:bg-orange-600 font-semibold'>Rechercher</Link>
                     </div>
                 </form>

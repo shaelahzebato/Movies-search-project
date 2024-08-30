@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import homepagebg from '../../images/accueil–1.png'
@@ -6,40 +6,141 @@ import logo from '../../images/Logo.png'
 
 //S'inscrire
 function SignUp() {
+    
+    const [email, setEmail] =  useState("");
+    const [password, setPassword] =  useState("");
+    const [username, setUsername] =  useState("");
+    const [userSurname, setUserSurname] =  useState("");
+    const [phone, setPhone] = useState("")
+    const [country, setCountry] = useState("")
+
+
+    const register = (e) => {
+        e.preventDefault()
+        fetch('http://symbian.stvffmn.com:10050/api/v1/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                nom: username,
+                prenoms: userSurname,
+                email: email,
+                password: password,
+                telephone: phone,
+                pays_id: 1
+            }),
+        })
+        .then(response => response.json())
+        .then(data => console.log("data :: ", data))
+        .catch(error => console.error('Error:', error));
+
+    }
+    
     return (
-        <div className='h-screen bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
-            <div className="container mx-auto py-10">
-                <div className="max-w-xl mx-auto bg-mycolorr bg-opacity-75 text-white rounded-md">
+        <div className='min-h-screen bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
+            <div className="container mx-auto py-10 px-4 lg:px-0">
+                <div className="max-w-4xl mx-auto bg-mycolorr bg-opacity-95 text-white rounded-sm mt-0 md:mt-10">
                     <div className="w-3/4 mx-auto py-14 flex flex-col gap-10">
                         <Link to={"/"} className="flex items-center justify-center">
                             <img className='w-20' src={logo} alt="Website logo" />
                         </Link>
-                        <form className="flex flex-col gap-4">
-                            <div className="relative z-0 w-full mb-5 group">
-                                <input type="text" name="floating_first_name" id="floating_first_name" className="block py-4 px-0 w-full text-sm text-gray-900 bg-transparent border border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-orange-600 peer" placeholder=" " required />
-                                <label for="floating_first_name" className="peer-focus:font-medium absolute text-[1rem] px-4 text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-orange-600 peer-focus:dark:text-orange-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2 font-lato">Nom ou Pseudo</label>
+                        <form onSubmit={register} className="flex flex-col gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-10">
+                                <div className="mb-4">
+                                    <label className="block text-white text-lg font-medium mb-2" htmlFor="name">
+                                    Nom
+                                    </label>
+                                    <input
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    type="text"
+                                    id="name"
+                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    placeholder="Entrez votre nom"
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block ttext-white text-lg font-medium mb-2" htmlFor="surname">
+                                    Prénom(s)
+                                    </label>
+                                    <input
+                                    value={userSurname}
+                                    onChange={(e) => setUserSurname(e.target.value)}
+                                    type="text"
+                                    id="surname"
+                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    placeholder="Entrez votre prénom"
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-white text-lg font-medium mb-2" htmlFor="email">
+                                    Email
+                                    </label>
+                                    <input
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    type="email"
+                                    id="email"
+                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    placeholder="Entrez votre email"
+                                    />
+                                </div>
+                                <div className="mb-6">
+                                    <label className="block text-white text-lg font-medium mb-2" htmlFor="password">
+                                    Mot de passe
+                                    </label>
+                                    <input
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    type="password"
+                                    id="password"
+                                    className="w-full px-4 py-4 bg-[#141314] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    placeholder="Entrez votre password"
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-white text-lg font-medium mb-2" htmlFor="phone">
+                                    Téléphone
+                                    </label>
+                                    <input
+                                    type="tel"
+                                    id="phone"
+                                    name="phone"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    placeholder="Entrez votre numéro de téléphone"
+                                    required
+                                    />
+                                </div>
+                                <div className="mb-6">
+                                    <label className="block text-white text-lg font-medium mb-2" htmlFor="country">
+                                    Pays
+                                    </label>
+                                    <select
+                                    id="country"
+                                    name="country"
+                                    value={country}
+                                    onChange={(e) => setCountry(e.target.value)}
+                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    required
+                                    >
+                                        <option value="" disabled>Selectionnez votre pays</option>
+                                        <option value="CI">Côte D'ivoire</option>
+                                        <option value="US">Etat Unis</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="FR">France</option>
+                                        <option value="DE">Allemagne</option>
+                                        <option value="IN">Inde</option>
+                                        <option value="BR">Brésil</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div className="relative z-0 w-full mb-5 group">
-                                <input type="email" name="floating_email" id="floating_email" className="block py-4 px-0 w-full text-sm text-gray-900 bg-transparent border border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-orange-600 peer" placeholder=" " required />
-                                <label for="floating_email" className="peer-focus:font-medium absolute text-[1rem] px-4 text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-orange-600 peer-focus:dark:text-orange-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2 font-lato">Adresse email</label>
-                            </div>
-                            <div className="relative z-0 w-full mb-5 group">
-                                <input type="password" name="floating_password" id="floating_password" className="block py-4 px-0 w-full text-sm text-gray-900 bg-transparent border border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-orange-600 peer" placeholder=" " required />
-                                <label for="floating_password" className="peer-focus:font-medium absolute text-[1rem] px-4 text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-orange-600 peer-focus:dark:text-orange-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2 font-lato">Mot de passe</label>
-                            </div>
-                            <div className="relative z-0 w-full mb-5 group">
-                                <input type="password" name="repeat_password" id="floating_repeat_password" className="block py-4 px-0 w-full text-sm text-gray-900 bg-transparent border border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-orange-600 peer" placeholder=" " required />
-                                <label for="floating_repeat_password" className="peer-focus:font-medium absolute text-[1rem] px-4 text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-orange-600 peer-focus:dark:text-orange-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2 font-lato">Confirmation de mot de passe</label>
-                            </div>
-                            <div className="relative z-0 w-full mb-5 group">
-                                <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="floating_phone" id="floating_phone" className="block py-4 px-0 w-full text-sm text-gray-900 bg-transparent border border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-orange-600 peer" placeholder=" " required />
-                                <label for="floating_phone" className="peer-focus:font-medium absolute text-[1rem] px-4 text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-orange-600 peer-focus:dark:text-orange-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2 font-lato">Téléphone (078-980-7498)</label>
-                            </div>
-                            <div className="relative z-0 w-full mb-5 group">
-                                <input type="text" name="floating_company" id="floating_company" className="block py-4 px-0 w-full text-sm text-gray-900 bg-transparent border border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-orange-600 peer" placeholder=" " required />
-                                <label for="floating_company" className="peer-focus:font-medium absolute text-[1rem] px-4 text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-orange-600 peer-focus:dark:text-orange-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2">Pays</label>
-                            </div>
-                            <button type="submit" className="font-lato text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-[.2rem] text-sm w-full sm:w-auto px-5 py-2.5 text-center">S'inscrire</button>
+                            <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-sm transition duration-300">
+                                S'inscrire
+                            </button>
                         </form>
                         <div className="flex flex-col gap-4 items-center">
                             <p className='text-center'>Vous avez déjà un compte ? <Link to={"/signin"} className='text-orange-500 ml-2'>Connectez-vous ici !</Link></p>
@@ -51,4 +152,4 @@ function SignUp() {
     )
 }
 
-export default SignUp
+export default SignUp;

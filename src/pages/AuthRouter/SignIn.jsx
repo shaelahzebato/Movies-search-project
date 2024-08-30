@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import homepagebg from '../../images/accueil–1.png'
@@ -7,24 +7,75 @@ import logo from '../../images/Logo.png'
 
 //Se connecter
 function SignIn() {
+
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [message, setMessage] = useState("")
+    
+
+    const login = async (e) => {
+        e.preventDefault()
+        await fetch(`http://symbian.stvffmn.com:10050/api/v1/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("data => ", data)
+            localStorage.setItem('token', data.access_token);
+            setMessage("Bienvenue... vous serez redirigé à l'accueil !")
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 3000);
+        });
+    }
+
     return (
-        <div className='h-screen bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
-            <div className="container mx-auto py-40">
-                <div className="max-w-md mx-auto bg-mycolorr bg-opacity-75 text-white rounded-md">
+        <div className='min-h-screen bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
+            <div className="container mx-auto py-40 px-4 lg:px-0">
+                <div className="max-w-xl mx-auto bg-mycolorr bg-opacity-95 text-white rounded-md">
+                    <p className='text-2xl text-center text-orange-600'>{message}</p>
                     <div className="w-3/4 mx-auto py-14 flex flex-col gap-10">
                         <Link to={"/"} className="flex items-center justify-center">
                             <img className='w-20' src={logo} alt="Website logo" />
                         </Link>
-                        <form className="flex flex-col gap-4">
-                            <div className="relative z-0 w-full mb-5 group">
-                                <input type="email" name="floating_email" id="floating_email" className="block py-4 px-0 w-full text-sm text-gray-900 bg-transparent border border-gray-300 appearance-none dark:text-white focus:outline-none focus:ring-0 focus:border-orange-600 peer" placeholder=" " required />
-                                <label for="floating_email" className="peer-focus:font-medium absolute text-[1rem] px-4 text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-orange-600 peer-focus:dark:text-orange-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2 font-lato">Adresse email</label>
+                        <form onSubmit={login} className="flex flex-col gap-4">
+                            <div className="mb-4">
+                                <label className="block text-white text-lg font-medium mb-2" htmlFor="email">
+                                    Email
+                                </label>
+                                <input
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    type="email"
+                                    id="email"
+                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    placeholder="Entrez votre email"
+                                />
                             </div>
-                            <div className="relative z-0 w-full mb-5 group">
-                                <input type="password" name="floating_password" id="floating_password" className="block py-4 px-0 w-full text-sm text-gray-900 bg-transparent border border-gray-300 appearance-none dark:text-white focus:outline-none focus:ring-0 focus:border-orange-600 peer" placeholder=" " required />
-                                <label for="floating_password" className="peer-focus:font-medium absolute text-[1rem] px-4 text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-orange-600 peer-focus:dark:text-orange-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2 font-lato">Mot de passe</label>
+                            <div className="mb-6">
+                                <label className="block text-white text-lg font-medium mb-2" htmlFor="password">
+                                    Mot de passe
+                                </label>
+                                <input
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    type="password"
+                                    id="password"
+                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    placeholder="Entrez votre password"
+                                />
                             </div>
-                            <button type="submit" className="font-lato text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-[.2rem] text-sm w-full sm:w-auto px-5 py-2.5 text-center">Se connecter</button>
+                            <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-sm transition duration-300">
+                                Se connecter
+                            </button>
                         </form>
                         <div className="flex flex-col gap-4 items-center">
                             <p className='text-center'>Vous n'avez pas compte ? <Link to={"/signup"} className='text-orange-500 ml-2'>Inscrivez vous ici !</Link></p>
@@ -64,4 +115,4 @@ function SignIn() {
     )
 }
 
-export default SignIn
+export default SignIn;

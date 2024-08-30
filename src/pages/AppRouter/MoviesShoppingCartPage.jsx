@@ -7,6 +7,7 @@ import NavBar from '../../components/NavBar/NavBar'
 function MovieShoppingCartPage() {
 
     const [moviesShopCart, setMoviesShopCart]= useState([])
+    const [quantity, setQuantity] = useState(1);
 
     const imgBase = "https://image.tmdb.org/t/p/original/";
 
@@ -25,10 +26,23 @@ function MovieShoppingCartPage() {
         getMoviesForShopCart()
     })
 
+    const incrementQuantity = () => {
+        setQuantity(prevQuantity => prevQuantity + 1);
+    };
+    
+    const decrementQuantity = () => {
+        setQuantity(prevQuantity => {
+        if (prevQuantity > 1) {
+                return prevQuantity - 1;
+            } else {
+                return prevQuantity;
+            }
+        });
+    };
 
     return (
         <>
-            <div className='bg-black bg-opacity-85'>
+            <div className='bg-black bg-opacity-85 z-50'>
                 <NavBar/>
             </div>
             <section className="relative z-10 after:contents-[''] after:absolute after:z-0 after:h-full xl:after:w-1/3 after:top-0 after:right-0 after:bg-gray-50">
@@ -70,13 +84,13 @@ function MovieShoppingCartPage() {
                                             </div>
                                             <div className="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
                                                 <div className="flex items-center h-full">
-                                                    <button className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+                                                    <button onClick={(e) => decrementQuantity(e)} className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
                                                         <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faMinus}/>
                                                     </button>
                                                     <input type="text"
                                                         className="border-y border-gray-200 outline-none text-gray-900 font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-gray-900 py-[12px]  text-center bg-transparent"
-                                                        placeholder="1"/>
-                                                    <button className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+                                                        value={quantity}/>
+                                                    <button onClick={(e) => incrementQuantity(e)} className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
                                                         <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faPlus}/>
                                                     </button>
                                                 </div>
