@@ -14,7 +14,7 @@ function SignIn() {
 
     const login = async (e) => {
         e.preventDefault()
-        await fetch(`http://symbian.stvffmn.com:10050/api/v1/login`, {
+        await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -33,7 +33,7 @@ function MovieHomePage() {
             }
 
             try {
-                const response = await fetch('http://symbian.stvffmn.com:10050/api/v1/me', {
+                const response = await fetch('https://symbian.stvffmn.com/nady/public/api/v1/me', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,

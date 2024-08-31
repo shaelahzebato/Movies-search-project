@@ -18,7 +18,7 @@ function SignUp() {
 
     const register = (e) => {
         e.preventDefault()
-        fetch('http://symbian.stvffmn.com:10050/api/v1/register', {
+        fetch('https://symbian.stvffmn.com/nady/public/api/v1/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
