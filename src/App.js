@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import AppRouter from './pages/AppRouter/AppRouter';
 import AuthRouter from './pages/AuthRouter/AuthRouter';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
 
@@ -8,7 +9,10 @@ function App() {
 
 
     return (
-        isAuthenticated ? <AppRouter/> : <AuthRouter/>
+        <div>
+        <Toaster position="top-right" reverseOrder={false} />
+            {isAuthenticated ? <AppRouter/> : <AuthRouter/>}
+        </div>
     );
 }
 

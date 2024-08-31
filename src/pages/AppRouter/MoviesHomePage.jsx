@@ -60,7 +60,7 @@ function MovieHomePage() {
    
     
     return (
-        <div className='h-screen bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
+        <div className='min-h-screen bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
             <NavBar/>
             <div className="h-[85%] lg:w-4/6 mx-auto flex flex-col gap-10 items-center justify-center">
                 <h1 className='text-white text-3xl lg:text-4xl flex flex-col items-center justify-center gap-2'>

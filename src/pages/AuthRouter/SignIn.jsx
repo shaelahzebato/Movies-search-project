@@ -3,14 +3,13 @@ import { Link } from 'react-router-dom'
 
 import homepagebg from '../../images/accueil–1.png'
 import logo from '../../images/Logo.png'
-
+import toast from 'react-hot-toast';
 
 //Se connecter
 function SignIn() {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [message, setMessage] = useState("")
     
 
     const login = async (e) => {
@@ -30,10 +29,15 @@ function SignIn() {
         .then((data) => {
             console.log("data => ", data)
             localStorage.setItem('token', data.access_token);
-            setMessage("Bienvenue... vous serez redirigé à l'accueil !")
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 3000);
+            if(data.success) {
+                toast.success(data.message ||'Connexion réussie!')
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 3000)
+            }
+            else {
+                toast.error(data.message || "Echec ! Veuillez vérifier vos données, email, mot de passe...")
+            }
         });
     }
 
@@ -41,7 +45,6 @@ function SignIn() {
         <div className='min-h-screen bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
             <div className="container mx-auto py-40 px-4 lg:px-0">
                 <div className="max-w-xl mx-auto bg-mycolorr bg-opacity-95 text-white rounded-md">
-                    <p className='text-2xl text-center text-orange-600'>{message}</p>
                     <div className="w-3/4 mx-auto py-14 flex flex-col gap-10">
                         <Link to={"/"} className="flex items-center justify-center">
                             <img className='w-20' src={logo} alt="Website logo" />

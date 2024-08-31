@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import homepagebg from '../../images/accueil–1.png'
 import logo from '../../images/Logo.png'
+import toast from 'react-hot-toast';
 
 //S'inscrire
 function SignUp() {
@@ -33,11 +34,24 @@ function SignUp() {
             }),
         })
         .then(response => response.json())
-        .then(data => console.log("data :: ", data))
+        .then(data => {
+            if(data.success) {
+                toast.success(data.message)
+                setTimeout(() => {
+                    window.location.href = '/signin';
+                }, 3000)
+            }
+            else {
+                toast.error(data.message)
+            }
+            console.log("data :: ", data)
+
+        })
         .catch(error => console.error('Error:', error));
 
+
     }
-    
+    // nadi2024 jaco2024 > kouadjav@en.ci
     return (
         <div className='min-h-screen bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
             <div className="container mx-auto py-10 px-4 lg:px-0">
