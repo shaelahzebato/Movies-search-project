@@ -71,7 +71,7 @@ function MovieHomePage() {
                 </h1>
                 <form onSubmit={e => handleSubmit(e)} className="w-full md:w-3/6 lg:w-3/6 mx-auto px-4">
                     <div className=" flex flex-col gap-4">
-                        <input type="text" value={movieNameEntered} onChange={handleChange} className='border p-2 rounded-sm focus:outline-none' placeholder="Entrez le nom d'un film..."/>
+                        <input type="text" value={movieNameEntered} onChange={handleChange} className='border p-4 rounded-md focus:outline-none' placeholder="Entrez le nom d'un film..."/>
                         <Link to={`/movies-results?name=${movieNameEntered}`} className='bg-orange-500 rounded-md text-white borde p-3 w-full text-center hover:bg-orange-600 font-semibold'>Rechercher</Link>
                     </div>
                 </form>
