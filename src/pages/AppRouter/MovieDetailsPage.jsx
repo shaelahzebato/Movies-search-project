@@ -101,7 +101,7 @@ function MovieDetailsPage() {
                                     <div className="max-w-full h-[300px] w-full m-auto py-8 relative group">
                                         <div style={{ backgroundImage: `url(${imgBase}/${similarMovies[currentIndex]?.backdrop_path})` }} className="w-full h-full bg-center bg-cover duration-500"></div>
                                         
-                                        <Link to={similarMovies[currentIndex]?.id} className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                        <Link to={`/movie-details?id=${similarMovies[currentIndex]?.id}`} className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                                             <h1 className="text-white text-center text-xl font-bold">{similarMovies[currentIndex]?.title}</h1>
                                         </Link>
 
