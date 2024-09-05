@@ -62,17 +62,16 @@ function MovieHomePage() {
     return (
         <div className='min-h-screen bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
             <NavBar/>
-            <div className="h-[85%] lg:w-4/6 mx-auto flex flex-col gap-10 items-center justify-center">
-                <h1 className='mt-32 md:mt-2 text-white text-3xl lg:text-4xl flex flex-col items-center justify-center gap-2'>
-                    {userData ? <p className='mb-10 text-center'>Bonjour <strong className='font-bold text-orange-500'>{userData?.datas?.nom}...</strong></p> : ""}
+            <div className="max-md:w-full fixed top-[40%] left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center gap-10">
+                <h1 className='text-white text-3xl lg:text-4xl flex flex-col items-center justify-center gap-2'>
                     <p className='text-center'>Bienvenue sur <strong className='text-orange-500'>BoxFun...</strong></p>
                     <p className='text-center'>Recherchez vos films, des plus epoustouflants</p>
                     <p className='text-center'>ici <FontAwesomeIcon className='text-orange-500 font-semibold' icon={faAngleDoubleDown}/>!</p>
                 </h1>
-                <form onSubmit={e => handleSubmit(e)} className="w-full md:w-3/6 lg:w-3/6 mx-auto px-4">
-                    <div className=" flex flex-col gap-4">
-                        <input type="text" value={movieNameEntered} onChange={handleChange} className='border p-4 rounded-md focus:outline-none' placeholder="Entrez le nom d'un film..."/>
-                        <Link to={`/movies-results?name=${movieNameEntered}`} className='bg-orange-500 rounded-md text-white borde p-3 w-full text-center hover:bg-orange-600 font-semibold'>Rechercher</Link>
+                <form onSubmit={e => handleSubmit(e)} className="w-full mx-auto px-4">
+                    <div className="flex flex-col gap-2">
+                        <input type="text" value={movieNameEntered} onChange={handleChange} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-4 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Entrez le nom d'un film..."/>
+                        <Link to={`/movies-results?name=${movieNameEntered}`} className='flex-shrink-0 transform transition duration-300 bg-orange-500 hover:bg-orange-600 border-orange-500 hover:border-orange-700 text-lg border-4 text-white py-2.5 px-2 rounded text-center font-semibold'>Rechercher</Link>
                     </div>
                 </form>
             </div>

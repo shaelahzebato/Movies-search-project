@@ -163,19 +163,13 @@ function NavBar() {
                                                     </svg>
                                                 </button>
                                                 {isReOpen && (
-                                                    <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-sm shadow-lg text-white z-50 bg-black bg-opacity-75 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                        <div className="flex flex-col justify-center gap-6 px-4">
-                                                            <Link to={'/signin'} className='flex gap-2 items-center text-white text-sm font-lato hover:text-orange-500'>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
-                                                                </svg>
-                                                                <button className='text-sm uppercase'>Connexion</button>
+                                                    <div className="origin-top-right absolute right-0 mt-2 w-56 py-4 rounded-sm shadow-lg text-white z-50 bg-black bg-opacity-75 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                        <div className="flex justify-center gap-6 px-4">
+                                                            <Link to={'/signin'} className='flex items-center gap-2 text-white p-2 bg-orange-500 rounded-md font-lato transform transition duration-300 hover:scale-105 hover:bg-orange-600 hover:text-white'>
+                                                                <button className='text-sm'>Connexion</button>
                                                             </Link>
-                                                            <Link to={'/signup'} className='flex gap-2 items-center text-white text-sm font-lato hover:text-orange-500'>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
-                                                                </svg>
-                                                                <button className='text-sm uppercase'>Inscription</button>
+                                                            <Link to={'/signup'} className='flex items-center gap-2 text-white p-1.5 bg-black/35 border border-orange-600 rounded-md font-lato hover:bg-black/45 transform transition duration-300 hover:scale-105 hover:text-orange-500'>
+                                                                <button className='text-sm'>Inscription</button>
                                                             </Link>
                                                         </div>
                                                     </div>
@@ -189,18 +183,12 @@ function NavBar() {
                     </div>
                     {/**Grand ecran */}
                     <div className="max-lg:hidden flex justify-between items-center gap-4">
-                        <Link to={'/signin'} className='flex items-center gap-2 text-white text-sm font-lato font-semibold hover:text-orange-500'>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
-                            </svg>
-                            <button className='text-sm uppercase'>Connexion</button>
+                        <Link to={'/signin'} className='flex items-center gap-2 text-white p-2 bg-orange-500 rounded-md font-lato transform transition duration-300 hover:scale-105 hover:bg-orange-600 hover:text-white'>
+                            <button className='text-sm'>Connexion</button>
                         </Link>
-                        <div className="h-6 w-px bg-white mx-4"></div>
-                        <Link to={'/signup'} className='flex items-center gap-2 text-white text-sm font-lato font-semibold hover:text-orange-500'>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
-                            </svg>
-                            <button className='text-sm uppercase'>Inscription</button>
+                        {/* <div className="h-6 w-px bg-white mx-4"></div> */}
+                        <Link to={'/signup'} className='flex items-center gap-2 text-white p-1.5 bg-black/35 border border-orange-600 rounded-md font-lato hover:bg-black/45 transform transition duration-300 hover:scale-105 hover:text-orange-500'>
+                            <button className='text-sm'>Inscription</button>
                         </Link>
                     </div>
                 </nav>
