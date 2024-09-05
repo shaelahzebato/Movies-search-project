@@ -101,9 +101,9 @@ function MovieDetailsPage() {
                                     <div className="max-w-full h-[300px] w-full m-auto py-8 relative group">
                                         <div style={{ backgroundImage: `url(${imgBase}/${similarMovies[currentIndex]?.backdrop_path})` }} className="w-full h-full bg-center bg-cover duration-500"></div>
                                         
-                                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                        <Link to={similarMovies[currentIndex]?.id} className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                                             <h1 className="text-white text-center text-xl font-bold">{similarMovies[currentIndex]?.title}</h1>
-                                        </div>
+                                        </Link>
 
                                         {/* Flèche droite */}
                                         <div className="absolute top-1/2 -translate-y-1/2 left-0 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer" onClick={prevSlide}        >
@@ -203,12 +203,12 @@ function MovieDetailsPage() {
                                     <h2 className='text-2xl'>Films similaires</h2>
                                     <div className="max-lg:hidden grid grid-cols-6 gap-4">
                                         {similarMovies.map((simov, index) => (
-                                            <div key={index} className="relative w-full h-64 bg-gray-600">
+                                            <Link to={`/movie-details?id=${simov.id}`} key={index} className="relative w-full h-64 bg-gray-600">
                                                 <img src={`https://image.tmdb.org/t/p/original/${simov.backdrop_path}`} alt="fond" className="w-full h-full object-cover"/>
                                                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                                                     <h1 className="text-white text-center text-xl font-bold">{simov.title}</h1>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         ))}
                                     </div>
                                 </div>
