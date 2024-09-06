@@ -58,9 +58,6 @@ function MovieSearchResultsPage() {
                                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                                     <h1 className="text-white text-center text-xl font-bold Montserrat">{movie.title}</h1>
                                 </div>
-                                <div className="">
-                                    <FontAwesomeIcon icon={faPlus}/>
-                                </div>
                             </Link>
                         ))}
                     </div>
