@@ -168,7 +168,7 @@ function NavBar() {
                                                             <Link to={'/signin'} className='flex items-center gap-2 text-white p-2 bg-orange-500 rounded-md font-lato transform transition duration-300 hover:scale-105 hover:bg-orange-600 hover:text-white'>
                                                                 <button className='text-sm'>Connexion</button>
                                                             </Link>
-                                                            <Link to={'/signup'} className='flex items-center gap-2 text-white p-1.5 bg-black/35 border border-orange-600 rounded-md font-lato hover:bg-black/45 transform transition duration-300 hover:scale-105 hover:text-orange-500'>
+                                                            <Link to={'/signup'} className='flex items-center gap-2 text-white p-1.5 bg-black/35 border border-orange-600 rounded-md font-lato hover:bg-black/45 transform transition duration-300 hover:scale-105 hover:text-white'>
                                                                 <button className='text-sm'>Inscription</button>
                                                             </Link>
                                                         </div>
@@ -187,7 +187,7 @@ function NavBar() {
                             <button className='text-sm'>Connexion</button>
                         </Link>
                         {/* <div className="h-6 w-px bg-white mx-4"></div> */}
-                        <Link to={'/signup'} className='flex items-center gap-2 text-white p-1.5 bg-black/35 border border-orange-600 rounded-md font-lato hover:bg-black/45 transform transition duration-300 hover:scale-105 hover:text-orange-500'>
+                        <Link to={'/signup'} className='flex items-center gap-2 text-white p-1.5 bg-black/35 border border-orange-600 rounded-md font-lato hover:bg-black/45 transform transition duration-300 hover:scale-105 hover:text-white'>
                             <button className='text-sm'>Inscription</button>
                         </Link>
                     </div>
