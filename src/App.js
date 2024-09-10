@@ -15,6 +15,6 @@ function App() {
         </div>
     );
 }
-// http://symbian.stvffmn.com:10050/api/v1/
+// Ancienne API > http://symbian.stvffmn.com:10050/api/v1/
 
 export default App;
