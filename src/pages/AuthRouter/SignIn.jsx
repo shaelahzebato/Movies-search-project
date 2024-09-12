@@ -82,7 +82,7 @@ function SignIn() {
     if (loading) {
         return <body class="flex items-center justify-center h-screen bg-gray-100">
             <div class="flex flex-col items-center justify-center space-y-4">
-            <div class="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
+            <div class="w-16 h-16 border-4 border-orange-500 border-dotted rounded-full animate-spin"></div>
         
             <h2 class="text-xl font-semibold text-gray-700">Chargement...</h2>
         
