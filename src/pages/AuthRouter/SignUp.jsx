@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import homepagebg from '../../images/accueil–1.png'
@@ -12,45 +12,138 @@ function SignUp() {
     const [password, setPassword] =  useState("");
     const [username, setUsername] =  useState("");
     const [userSurname, setUserSurname] =  useState("");
-    const [phone, setPhone] = useState("")
+    const [phoneNumber, setPhoneNumber] = useState("")
     const [country, setCountry] = useState("")
+    const [countryList, setCountryList] = useState([])
+    const [showPassword, setShowPassword] = useState(false); // État pour afficher/masquer le mot de passe
+
+    const [errors, setErrors] = useState({
+        email: "",
+        password: "",
+        username: "",
+        userSurname: "",
+        phoneNumber: ""
+    });
+
+    // Regex pour France et Côte d'Ivoire
+    const franceRegex = /^(\+33|0)[1-9](\d{2}){4}$/;
+    const ivoryCoastRegex = /^(\+225|0)([0-9]{8})$/;
+
+
+    // Fonction de validation
+    const enteredDataValidation = () => {
+        let valid = true;
+        let newErrors = {};
+
+        // Validation de l'email
+        if (!email) {
+        newErrors.email = "L'email est requis.";
+        valid = false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+        newErrors.email = "L'email n'est pas valide.";
+        valid = false;
+        }
+
+        // Validation du mot de passe
+        if (!password) {
+        newErrors.password = "Le mot de passe est requis.";
+        valid = false;
+        } else if (password.length < 6) {
+        newErrors.password = "Le mot de passe doit contenir au moins 6 caractères.";
+        valid = false;
+        }
+
+        // Validation du nom d'utilisateur
+        if (!username) {
+        newErrors.username = "Le nom d'utilisateur est requis.";
+        valid = false;
+        } else if (username.length < 3) {
+        newErrors.username = "Le nom d'utilisateur doit contenir au moins 3 caractères.";
+        valid = false;
+        }
+
+        // Validation du prenom d'utilisateur
+        if (!userSurname) {
+            newErrors.userSurname = "Le prenom d'utilisateur est requis.";
+            valid = false;
+            } else if (userSurname.length < 3) {
+            newErrors.userSurname = "Le prenom d'utilisateur doit contenir au moins 3 caractères.";
+            valid = false;
+        }
+
+        // Validation du téléphone d'utilisateur
+        if (!phoneNumber) {
+            newErrors.phoneNumber = "L'email est requis.";
+            valid = false;
+        }
+        else if (!franceRegex.test(phoneNumber) || !ivoryCoastRegex.test(phoneNumber)) {
+            newErrors.phoneNumber = "Le numéro n'est pas valide.";
+            valid = false;
+        }
+        
+            
+        setErrors(newErrors);
+        return valid;
+    }
 
 
     const register = (e) => {
         e.preventDefault()
-        fetch('https://symbian.stvffmn.com/nady/public/api/v1/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                nom: username,
-                prenoms: userSurname,
-                email: email,
-                password: password,
-                telephone: phone,
-                pays_id: 1
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.success) {
-                toast.success(data.message)
-                setTimeout(() => {
-                    window.location.href = '/signin';
-                }, 3000)
-            }
-            else {
-                toast.error(data.message)
-            }
-            console.log("data :: ", data)
-
-        })
-        .catch(error => console.error('Error:', error));
-
-
+        if(enteredDataValidation()) {
+            fetch('https://symbian.stvffmn.com/nady/public/api/v1/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    nom: username,
+                    prenoms: userSurname,
+                    email: email,
+                    password: password,
+                    telephone: phoneNumber,
+                    pays_id: country
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Les de l'utilisateur inscrit :: ", data)
+                localStorage.setItem('token', data.access_token);
+                if(data.success) {
+                    toast.success(data.message)
+                    setTimeout(() => {
+                        window.location.href = '/signin';
+                    }, 3000)
+                }
+                else {
+                    toast.error(data.message)
+                }
+                console.log("data :: ", data)
+    
+            })
+            .catch(error => console.error('Error:', error));
+        }
     }
+
+
+    useEffect(() => {
+        console.log("Coucou");
+        fetch('https://symbian.stvffmn.com/nady/public/api/v1/pays', {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json', // Spécifiez que vous attendez du JSON en réponse
+            },
+        })
+        .then((response) => response.json()).then((data) => {
+            console.log("Coucou pays > ", data.datas);
+            setCountryList(data.datas)
+        })    
+    }, [])
+    
+
+
+    
+
     // nadi2024 jaco2024 > kouadjav@en.ci
     return (
         <div className='min-h-screen bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
@@ -71,9 +164,10 @@ function SignUp() {
                                     onChange={(e) => setUsername(e.target.value)}
                                     type="text"
                                     id="name"
-                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.username ? "border border-red-500 focus:ring-0" : ""}`}
                                     placeholder="Entrez votre nom"
                                     />
+                                    {errors.username && <p className="text-red-500 text-xs italic">{errors.username}</p>}
                                 </div>
                                 <div className="mb-4">
                                     <label className="block ttext-white text-lg font-medium mb-2" htmlFor="surname">
@@ -84,9 +178,10 @@ function SignUp() {
                                     onChange={(e) => setUserSurname(e.target.value)}
                                     type="text"
                                     id="surname"
-                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.userSurname ? "border border-red-500 focus:ring-0" : ""}`}
                                     placeholder="Entrez votre prénom"
                                     />
+                                    {errors.userSurname && <p className="text-red-500 text-xs italic">{errors.userSurname}</p>}
                                 </div>
                                 <div className="mb-4">
                                     <label className="block text-white text-lg font-medium mb-2" htmlFor="email">
@@ -97,9 +192,10 @@ function SignUp() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     type="email"
                                     id="email"
-                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.email ? "border border-red-500 focus:ring-0" : ""}`}
                                     placeholder="Entrez votre email"
                                     />
+                                    {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
                                 </div>
                                 <div className="mb-6">
                                     <label className="block text-white text-lg font-medium mb-2" htmlFor="password">
@@ -108,11 +204,23 @@ function SignUp() {
                                     <input
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    type="password"
+                                    type={showPassword ? "text" : "password"} // Bascule entre text et password
                                     id="password"
-                                    className="w-full px-4 py-4 bg-[#141314] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    className={`w-full px-4 py-4 bg-[#141314] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.password ? "border border-red-500 focus:ring-0" : ""}`}
                                     placeholder="Entrez votre password"
                                     />
+                                    {errors.password && <p className="text-red-500 text-xs italic">{errors.password}</p>}
+                                    <div className="mt-2">
+                                        <label className="text-gray-600 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            className="mr-2 leading-tight"
+                                            checked={showPassword}
+                                            onChange={() => setShowPassword(!showPassword)}
+                                        />
+                                        Afficher le mot de passe
+                                        </label>
+                                    </div>
                                 </div>
                                 <div className="mb-4">
                                     <label className="block text-white text-lg font-medium mb-2" htmlFor="phone">
@@ -122,12 +230,13 @@ function SignUp() {
                                     type="tel"
                                     id="phone"
                                     name="phone"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    value={phoneNumber}
+                                    onChange={e => setPhoneNumber(e.target.value)}
+                                    className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.phoneNumber ? "border border-red-500 focus:ring-0" : ""}`}
                                     placeholder="Entrez votre numéro de téléphone"
                                     required
                                     />
+                                    {errors.phoneNumber && <p className="text-red-500 text-xs italic">{errors.phoneNumber}</p>}
                                 </div>
                                 <div className="mb-6">
                                     <label className="block text-white text-lg font-medium mb-2" htmlFor="country">
@@ -142,13 +251,9 @@ function SignUp() {
                                     required
                                     >
                                         <option value="" disabled>Selectionnez votre pays</option>
-                                        <option value="CI">Côte D'ivoire</option>
-                                        <option value="US">Etat Unis</option>
-                                        <option value="CA">Canada</option>
-                                        <option value="FR">France</option>
-                                        <option value="DE">Allemagne</option>
-                                        <option value="IN">Inde</option>
-                                        <option value="BR">Brésil</option>
+                                        {countryList.map((pays, index) => (
+                                            <option key={index} value={pays.id}>{pays.label}</option>
+                                        ))}
                                     </select>
                                 </div>
                             </div>

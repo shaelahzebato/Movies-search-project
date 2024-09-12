@@ -10,35 +10,85 @@ function SignIn() {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    
+    const [showPassword, setShowPassword] = useState(false); // État pour afficher/masquer le mot de passe
+
+    const [loading, setLoading] = useState(false); // Gérer l'état de chargement
+
+    const [errors, setErrors] = useState({
+        email: "",
+        password: ""
+    });
+
+    // Fonction de validation
+    const enteredDataValidation = () => {
+        let valid = true;
+        let newErrors = {};
+
+        // Validation de l'email
+        if (!email) {
+        newErrors.email = "L'email est requis.";
+        valid = false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+        newErrors.email = "L'email n'est pas valide.";
+        valid = false;
+        }
+
+        // Validation du mot de passe
+        if (!password) {
+        newErrors.password = "Le mot de passe est requis.";
+        valid = false;
+        } else if (password.length < 6) {
+        newErrors.password = "Le mot de passe doit contenir au moins 6 caractères.";
+        valid = false;
+        }
+
+            
+        setErrors(newErrors);
+        return valid;
+    }
 
     const login = async (e) => {
         e.preventDefault()
-        await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-            }),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("data => ", data)
-            localStorage.setItem('token', data.access_token);
-            if(data.success) {
-                toast.success(data.message ||'Connexion réussie!')
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 3000)
-            }
-            else {
-                toast.error(data.message || "Echec ! Veuillez vérifier vos données, email, mot de passe...")
-            }
-        });
+        if(enteredDataValidation()) {
+            await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("data => ", data)
+                localStorage.setItem('token', data.access_token);
+                if(data.success) {
+                    toast.success(data.message ||'Connexion réussie!')
+                    // setTimeout(() => {
+                        window.location.href = '/';
+                    // }, 3000)
+                }
+                else {
+                    toast.error(data.message || "Echec ! Veuillez vérifier vos données, email, mot de passe...")
+                }
+            });
+            setLoading(true)
+        }
+    }
+
+    if (loading) {
+        return <body class="flex items-center justify-center h-screen bg-gray-100">
+            <div class="flex flex-col items-center justify-center space-y-4">
+            <div class="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
+        
+            <h2 class="text-xl font-semibold text-gray-700">Chargement...</h2>
+        
+            <p class="text-gray-500">Merci de patienter quelques instants</p>
+            </div>
+        </body>
     }
 
     return (
@@ -59,9 +109,10 @@ function SignIn() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     type="email"
                                     id="email"
-                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.email ? "border border-red-500 focus:ring-0" : ""}`}
                                     placeholder="Entrez votre email"
                                 />
+                                {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
                             </div>
                             <div className="mb-6">
                                 <label className="block text-white text-lg font-medium mb-2" htmlFor="password">
@@ -70,11 +121,23 @@ function SignIn() {
                                 <input
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    type="password"
+                                    type={showPassword ? "text" : "password"} // Bascule entre text et password
                                     id="password"
-                                    className="w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                    className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.password ? "border border-red-500 focus:ring-0" : ""}`}
                                     placeholder="Entrez votre password"
                                 />
+                                {errors.password && <p className="text-red-500 text-xs italic">{errors.password}</p>}
+                                    <div className="mt-2">
+                                        <label className="text-gray-600 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            className="mr-2 leading-tight"
+                                            checked={showPassword}
+                                            onChange={() => setShowPassword(!showPassword)}
+                                        />
+                                        Afficher le mot de passe
+                                        </label>
+                                    </div>
                             </div>
                             <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-sm transition duration-300">
                                 Se connecter

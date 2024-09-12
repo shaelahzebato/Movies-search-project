@@ -1,4 +1,4 @@
-import React, {  useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../../images/Logo.png'
 import moi from '../../images/moii.png'
@@ -8,9 +8,42 @@ function NavBar() {
     const [isOpen, setIsOpen] = useState(false);
     const [isReOpen, setIsReOpen] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
-    // const token = localStorage.getItem('token');
+    const [error, setError] = useState("")
+    const [userData, setUserData] = useState("")
 
-    console.log("isAuthenticated ::: ", isAuthenticated);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setError('Token non trouvé !');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://symbian.stvffmn.com/nady/public/api/v1/me', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("data =>>> ", data);
+                    setUserData(data);
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.message);
+                }
+            } catch (err) {
+                setError('Erreurrrrrr.');
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     const logout = (e) => {
         e.preventDefault()
@@ -18,6 +51,8 @@ function NavBar() {
         setIsAuthenticated(false)
         window.location.href = '/';
     };
+
+    
 
     return (
         <div className='container mx-auto'>
@@ -59,7 +94,7 @@ function NavBar() {
                                                         <div className="flex flex-col gap-6">
                                                             <Link className='flex items-center gap-2 border-b border-gray-600 py-4 hover:text-orange-500 px-2'>
                                                                 <img className='w-10 h-10 object-cover bg-center rounded-full' src={moi} alt="" />
-                                                                <span>Nadia Karène</span>
+                                                                {userData && <span>{userData.datas.nom} {userData.datas.prenoms}</span>}
                                                             </Link>
                                                             <Link to={'/my-account'} className='flex items-center gap-2 hover:text-orange-500 px-2'>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeLinejoin="1.5" stroke="currentColor" className="size-6">
@@ -102,7 +137,7 @@ function NavBar() {
                                     <div className="flex flex-col gap-6">
                                         <Link className='flex items-center gap-2 border-b border-gray-600 py-4 hover:text-orange-500 px-2'>
                                             <img className='w-10 h-10 object-cover bg-center rounded-full' src={moi} alt="" />
-                                            <span>Nadia Karène</span>
+                                            {userData && <span>{userData.datas.nom} {userData.datas.prenoms}</span>}
                                         </Link>
                                         <Link to={"/my-account"} className='flex items-center gap-2 hover:text-orange-500 px-2'>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeLinejoin="1.5" stroke="currentColor" className="size-6">

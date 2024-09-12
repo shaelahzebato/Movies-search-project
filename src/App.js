@@ -10,11 +10,10 @@ function App() {
 
     return (
         <div>
-        <Toaster position="top-right" reverseOrder={false} />
+            <Toaster position="top-right" reverseOrder={false} />
             {isAuthenticated ? <AppRouter/> : <AuthRouter/>}
         </div>
     );
 }
-// Ancienne API > http://symbian.stvffmn.com:10050/api/v1/
 
 export default App;

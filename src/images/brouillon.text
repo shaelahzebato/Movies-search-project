@@ -1,0 +1,20 @@
+
+    const validatePhoneNumber = (number) => {
+        if (franceRegex.test(number)) {
+            setSucessMessage('Numéro valide pour la France');
+        } else if (ivoryCoastRegex.test(number)) {
+            setSucessMessage('Numéro valide pour la Côte d\'Ivoire');
+        } else {
+            setErrorMessage('Numéro invalide');
+        }
+    };
+
+    const handleChange = (e) => {
+        const value = e.target.value;
+        setPhoneNumber(value);
+        validatePhoneNumber(value);
+    };
+
+    pour la validation des numeros france et ci
+
+// Ancienne API > http://symbian.stvffmn.com:10050/api/v1/

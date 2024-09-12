@@ -5,12 +5,17 @@ import NavBar from '../../components/NavBar/NavBar'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDoubleDown } from '@fortawesome/free-solid-svg-icons'
+import toast from 'react-hot-toast'
 
 
 function MovieHomePage() {
 
     const [movieNameEntered, setMovieNameEntered] = useState("");
  
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+
+
+    
     const handleChange = (e) => {
         console.log(e.target.value);
         setMovieNameEntered(e.target.value)
@@ -20,44 +25,17 @@ function MovieHomePage() {
         e.preventDefault()
     }
 
+    const userIsActive = (e) => {
+        e.preventDefault()
+        if(!isAuthenticated) {
+            toast.error("Veuillez vous connecter ou créer un compte pour effectuer cette opération !")
+        }
+        else {
+            window.location.href = `/movies-results?name=${movieNameEntered}`;
+        }
+    }
 
-    const [userData, setUserData] = useState('');
-    const [error, setError] = useState("");
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                setError('Token non trouvé !');
-                return;
-            }
-
-            try {
-                const response = await fetch('https://symbian.stvffmn.com/nady/public/api/v1/me', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
-                    },
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log("data =>>> ", data);
-                    setUserData(data);
-                } else {
-                    const errorData = await response.json();
-                    setError(errorData.message);
-                }
-            } catch (err) {
-                setError('Erreurrrrrr.');
-            }
-        };
-
-        fetchUserData();
-    }, []);
-
-   
     
     return (
         <div className='min-h-screen bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
@@ -71,7 +49,8 @@ function MovieHomePage() {
                 <form onSubmit={e => handleSubmit(e)} className="w-full mx-auto px-4">
                     <div className="flex flex-col gap-2">
                         <input type="text" value={movieNameEntered} onChange={handleChange} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-4 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Entrez le nom d'un film..."/>
-                        <Link to={`/movies-results?name=${movieNameEntered}`} className='flex-shrink-0 transform transition duration-300 bg-orange-500 hover:bg-orange-600 border-orange-500 hover:border-orange-700 text-lg border-4 text-white py-2.5 px-2 rounded text-center font-semibold'>Rechercher</Link>
+                        <button onClick={(e) => userIsActive(e)} className='flex-shrink-0 transform transition duration-300 bg-orange-500 hover:bg-orange-600 border-orange-500 hover:border-orange-700 text-lg border-4 text-white py-2.5 px-2 rounded text-center font-semibold'>Rechercher</button>
+                        {/* <Link onClick={() => userIsActive()} to={`/movies-results?name=${movieNameEntered}`} className='flex-shrink-0 transform transition duration-300 bg-orange-500 hover:bg-orange-600 border-orange-500 hover:border-orange-700 text-lg border-4 text-white py-2.5 px-2 rounded text-center font-semibold'>Rechercher</Link> */}
                     </div>
                 </form>
             </div>
