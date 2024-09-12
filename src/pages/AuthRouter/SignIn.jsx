@@ -67,6 +67,7 @@ function SignIn() {
                 localStorage.setItem('token', data.access_token);
                 if(data.success) {
                     toast.success(data.message ||'Connexion réussie!')
+                    setLoading(true)
                     // setTimeout(() => {
                         window.location.href = '/';
                     // }, 3000)
@@ -75,18 +76,15 @@ function SignIn() {
                     toast.error(data.message || "Echec ! Veuillez vérifier vos données, email, mot de passe...")
                 }
             });
-            setLoading(true)
         }
     }
 
     if (loading) {
         return <body class="flex items-center justify-center h-screen bg-gray-100">
             <div class="flex flex-col items-center justify-center space-y-4">
-            <div class="w-16 h-16 border-4 border-orange-500 border-dotted rounded-full animate-spin"></div>
-        
-            <h2 class="text-xl font-semibold text-gray-700">Chargement...</h2>
-        
-            <p class="text-gray-500">Merci de patienter quelques instants</p>
+                <div class="w-16 h-16 border-4 border-orange-500 border-dotted rounded-full animate-spin"></div>
+                <h2 class="text-xl font-semibold text-gray-700">Chargement...</h2>
+                <p class="text-gray-500">Merci de patienter quelques instants</p>
             </div>
         </body>
     }

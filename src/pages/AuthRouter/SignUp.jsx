@@ -25,10 +25,12 @@ function SignUp() {
         phoneNumber: ""
     });
 
-    // Regex pour France et Côte d'Ivoire
-    const franceRegex = /^(\+33|0)[1-9](\d{2}){4}$/;
-    const ivoryCoastRegex = /^(\+225|0)([0-9]{8})$/;
-
+    
+    // Expressions régulières pour valider les numéros de téléphone
+    const ciPhoneRegex = /^(0[1579]\d{8})$/; // Numérotation à 10 chiffres pour Côte d'Ivoire (local)
+    const ciIntlPhoneRegex = /^\+225(0[1579]\d{8})$/; // Format international pour la Côte d'Ivoire
+    const frPhoneRegex = /^0[1-9]\d{8}$/; // Numéro local pour la France
+    const frIntlPhoneRegex = /^\+33[1-9]\d{8}$/; // Format international pour la France
 
     // Fonction de validation
     const enteredDataValidation = () => {
@@ -37,36 +39,36 @@ function SignUp() {
 
         // Validation de l'email
         if (!email) {
-        newErrors.email = "L'email est requis.";
-        valid = false;
+            newErrors.email = "L'email est requis.";
+            valid = false;
         } else if (!/\S+@\S+\.\S+/.test(email)) {
-        newErrors.email = "L'email n'est pas valide.";
-        valid = false;
+            newErrors.email = "L'email n'est pas valide.";
+            valid = false;
         }
 
         // Validation du mot de passe
         if (!password) {
-        newErrors.password = "Le mot de passe est requis.";
-        valid = false;
+            newErrors.password = "Le mot de passe est requis.";
+            valid = false;
         } else if (password.length < 6) {
-        newErrors.password = "Le mot de passe doit contenir au moins 6 caractères.";
-        valid = false;
+            newErrors.password = "Le mot de passe doit contenir au moins 6 caractères.";
+            valid = false;
         }
 
         // Validation du nom d'utilisateur
         if (!username) {
-        newErrors.username = "Le nom d'utilisateur est requis.";
-        valid = false;
+            newErrors.username = "Le nom d'utilisateur est requis.";
+            valid = false;
         } else if (username.length < 3) {
-        newErrors.username = "Le nom d'utilisateur doit contenir au moins 3 caractères.";
-        valid = false;
+            newErrors.username = "Le nom d'utilisateur doit contenir au moins 3 caractères.";
+            valid = false;
         }
 
         // Validation du prenom d'utilisateur
         if (!userSurname) {
             newErrors.userSurname = "Le prenom d'utilisateur est requis.";
             valid = false;
-            } else if (userSurname.length < 3) {
+        } else if (userSurname.length < 3) {
             newErrors.userSurname = "Le prenom d'utilisateur doit contenir au moins 3 caractères.";
             valid = false;
         }
@@ -76,7 +78,8 @@ function SignUp() {
             newErrors.phoneNumber = "L'email est requis.";
             valid = false;
         }
-        else if (!franceRegex.test(phoneNumber) || !ivoryCoastRegex.test(phoneNumber)) {
+        else if (!ciIntlPhoneRegex.test(phoneNumber)) {
+        // else if (!frPhoneRegex.test(phoneNumber) || !frIntlPhoneRegex.test(phoneNumber) || !ciPhoneRegex.test(phoneNumber) || !ciIntlPhoneRegex.test(phoneNumber)) {
             newErrors.phoneNumber = "Le numéro n'est pas valide.";
             valid = false;
         }
@@ -125,6 +128,8 @@ function SignUp() {
         }
     }
 
+    console.log("phone number > ", typeof phoneNumber);
+    
 
     useEffect(() => {
         console.log("Coucou");
@@ -227,11 +232,11 @@ function SignUp() {
                                     Téléphone
                                     </label>
                                     <input
-                                    type="tel"
+                                    type="text"
                                     id="phone"
                                     name="phone"
                                     value={phoneNumber}
-                                    onChange={e => setPhoneNumber(e.target.value)}
+                                    onChange={(event) => setPhoneNumber(event.target.value.replace(/\s+/g, ''))} // Enlever les espaces
                                     className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.phoneNumber ? "border border-red-500 focus:ring-0" : ""}`}
                                     placeholder="Entrez votre numéro de téléphone"
                                     required

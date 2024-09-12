@@ -18,3 +18,97 @@
     pour la validation des numeros france et ci
 
 // Ancienne API > http://symbian.stvffmn.com:10050/api/v1/
+
+
+LES REGEX
+// Regex pour France et Côte d'Ivoire
+    // const franceRegex = /^(\+33|0)[1-9](\d{2}){4}$/;
+    // const ivoryCoastRegex = /^(\+225|0)([0-9]{8})$/;
+
+    // const ciPhoneRegex = /^(0[1579]\d{8})$/; // Numérotation à 10 chiffres pour Côte d'Ivoire (local)
+    // const ciIntlPhoneRegex = /^\+225(0[1579]\d{8})$/; // Format international pour la Côte d'Ivoire
+    // const frPhoneRegex = /^0[1-9]\d{8}$/; // Numéro local pour la France
+    // const frIntlPhoneRegex = /^\+33[1-9]\d{8}$/; // Format international pour la France
+  
+
+const handlePhoneNumberValidation = (event) => {
+        const phone = event.target.value.replace(/\s+/g, ''); // Enlever les espaces
+        setPhoneNumber(phone);
+
+        // Validation pour la Côte d'Ivoire (local)
+        if (ciPhoneRegex.test(phone)) {
+        setMessage("Numéro valide pour la Côte d'Ivoire (local).");
+        } 
+        // Validation pour la Côte d'Ivoire (international)
+        else if (ciIntlPhoneRegex.test(phone)) {
+        setMessage("Numéro valide pour la Côte d'Ivoire (international).");
+        } 
+        // Validation pour la France (local)
+        else if (frPhoneRegex.test(phone)) {
+        setMessage("Numéro valide pour la France (local).");
+        } 
+        // Validation pour la France (international)
+        else if (frIntlPhoneRegex.test(phone)) {
+        setMessage("Numéro valide pour la France (international).");
+        } 
+        // Numéro invalide
+        else {
+        setMessage("Numéro invalide. Veuillez entrer un numéro valide pour la Côte d'Ivoire ou la France.");
+        }
+    };
+
+import React, { useState } from "react";
+
+const PhoneNumberValidation = () => {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [message, setMessage] = useState("");
+
+  // Expressions régulières pour valider les numéros de téléphone
+  const ciPhoneRegex = /^(0[1579]\d{8})$/; // Numérotation à 10 chiffres pour Côte d'Ivoire (local)
+  const ciIntlPhoneRegex = /^\+225(0[1579]\d{8})$/; // Format international pour la Côte d'Ivoire
+  const frPhoneRegex = /^0[1-9]\d{8}$/; // Numéro local pour la France
+  const frIntlPhoneRegex = /^\+33[1-9]\d{8}$/; // Format international pour la France
+
+  const handlePhoneNumberValidation = (event) => {
+    const phone = event.target.value.replace(/\s+/g, ''); // Enlever les espaces
+    setPhoneNumber(phone);
+
+    // Validation pour la Côte d'Ivoire (local)
+    if (ciPhoneRegex.test(phone)) {
+      setMessage("Numéro valide pour la Côte d'Ivoire (local).");
+    } 
+    // Validation pour la Côte d'Ivoire (international)
+    else if (ciIntlPhoneRegex.test(phone)) {
+      setMessage("Numéro valide pour la Côte d'Ivoire (international).");
+    } 
+    // Validation pour la France (local)
+    else if (frPhoneRegex.test(phone)) {
+      setMessage("Numéro valide pour la France (local).");
+    } 
+    // Validation pour la France (international)
+    else if (frIntlPhoneRegex.test(phone)) {
+      setMessage("Numéro valide pour la France (international).");
+    } 
+    // Numéro invalide
+    else {
+      setMessage("Numéro invalide. Veuillez entrer un numéro valide pour la Côte d'Ivoire ou la France.");
+    }
+  };
+
+  return (
+    <div>
+      <h3>Validation du numéro de téléphone (Côte d'Ivoire et France)</h3>
+      <input
+        type="text"
+        value={phoneNumber}
+        onChange={handlePhoneNumberValidation}
+        placeholder="Entrez votre numéro de téléphone"
+      />
+      <p>{message}</p>
+    </div>
+  );
+};
+
+export default PhoneNumberValidation;
+
+        // !franceRegex.test(phoneNumber) || !ivoryCoastRegex.test(phoneNumber)
