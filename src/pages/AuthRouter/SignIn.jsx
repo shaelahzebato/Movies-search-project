@@ -26,20 +26,20 @@ function SignIn() {
 
         // Validation de l'email
         if (!email) {
-        newErrors.email = "L'email est requis.";
-        valid = false;
+            newErrors.email = "L'email est requis.";
+            valid = false;
         } else if (!/\S+@\S+\.\S+/.test(email)) {
-        newErrors.email = "L'email n'est pas valide.";
-        valid = false;
+            newErrors.email = "L'email n'est pas valide.";
+            valid = false;
         }
 
         // Validation du mot de passe
         if (!password) {
-        newErrors.password = "Le mot de passe est requis.";
-        valid = false;
+            newErrors.password = "Le mot de passe est requis.";
+            valid = false;
         } else if (password.length < 6) {
-        newErrors.password = "Le mot de passe doit contenir au moins 6 caractères.";
-        valid = false;
+            newErrors.password = "Le mot de passe doit contenir au moins 6 caractères.";
+            valid = false;
         }
 
             
@@ -64,17 +64,24 @@ function SignIn() {
             .then((response) => response.json())
             .then((data) => {
                 console.log("data => ", data)
-                localStorage.setItem('token', data.access_token);
-                if(data.success) {
-                    toast.success(data.message ||'Connexion réussie!')
-                    setLoading(true)
-                    // setTimeout(() => {
-                        window.location.href = '/';
-                    // }, 3000)
-                }
+                if(data.access_token !== undefined) {
+                    
+                    localStorage.setItem('token', data.access_token);
+                    if(data.success) {
+                        setLoading(true)
+                        toast.success(data.message ||'Connexion réussie!')
+                        // setTimeout(() => {
+                            window.location.href = '/';
+                            // }, 3000)
+                        }
+                        else {
+                            toast.error(data.message || "Echec ! Veuillez vérifier vos données, email, mot de passe...")
+                            setLoading(true)
+                        }
+                    }
                 else {
-                    toast.error(data.message || "Echec ! Veuillez vérifier vos données, email, mot de passe...")
                     setLoading(true)
+                    toast.error(data.message || "Compte inexistant !")
                 }
             });
         }

@@ -15,7 +15,7 @@ function NavBar() {
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem('token');
-            if (!token) {
+            if (token === undefined) {
                 setError('Token non trouvé !');
                 return;
             }

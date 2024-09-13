@@ -112,30 +112,35 @@ function SignUp() {
             .then(response => response.json())
             .then(data => {
                 console.log("Les de l'utilisateur inscrit :: ", data)
-                localStorage.setItem('token', data.access_token);
-                if(data.success) {
-                    toast.success(data.message)
-                    setLoading(true)
-                    // setTimeout(() => {
-                        window.location.href = '/signin';
-                    // }, 3000)
+                if(data.access_token !== undefined) {
+                    
+                    localStorage.setItem('token', data.access_token);
+                    if(data.success) {
+                        toast.success(data.message)
+                        setLoading(true)
+                        // setTimeout(() => {
+                            window.location.href = '/signin';
+                            // }, 3000)
+                        }
+                    else {
+                        toast.error(data.message)
+                        setLoading(true)
+                    }
                 }
                 else {
-                    toast.error(data.message)
                     setLoading(true)
+                    toast.error(data.message || "Compte inexistant !")
                 }
-                console.log("data :: ", data)
     
             })
             .catch(error => console.error('Error:', error));
         }
     }
 
-    console.log("phone number > ", typeof phoneNumber);
+    
     
 
     useEffect(() => {
-        console.log("Coucou");
         fetch('https://symbian.stvffmn.com/nady/public/api/v1/pays', {
             method: 'GET',
             headers: {
@@ -143,7 +148,6 @@ function SignUp() {
             },
         })
         .then((response) => response.json()).then((data) => {
-            console.log("Coucou pays > ", data.datas);
             setCountryList(data.datas)
         })    
     }, [])
