@@ -114,13 +114,14 @@ function SignUp() {
                 console.log("Les de l'utilisateur inscrit :: ", data)
                 localStorage.setItem('token', data.access_token);
                 if(data.success) {
-                    toast.success(data.message)
                     setLoading(true)
+                    toast.success(data.message)
                     // setTimeout(() => {
                         window.location.href = '/signin';
                     // }, 3000)
                 }
                 else {
+                    setLoading(true)
                     toast.error(data.message)
                 }
                 console.log("data :: ", data)

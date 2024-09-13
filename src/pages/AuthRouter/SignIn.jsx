@@ -66,13 +66,14 @@ function SignIn() {
                 console.log("data => ", data)
                 localStorage.setItem('token', data.access_token);
                 if(data.success) {
-                    toast.success(data.message ||'Connexion réussie!')
                     setLoading(true)
+                    toast.success(data.message ||'Connexion réussie!')
                     // setTimeout(() => {
                         window.location.href = '/';
                     // }, 3000)
                 }
                 else {
+                    setLoading(true)
                     toast.error(data.message || "Echec ! Veuillez vérifier vos données, email, mot de passe...")
                 }
             });
