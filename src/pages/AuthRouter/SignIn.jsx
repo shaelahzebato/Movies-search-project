@@ -79,15 +79,15 @@ function SignIn() {
         }
     }
 
-    if (loading) {
-        return <body class="flex items-center justify-center h-screen bg-gray-100">
-            <div class="flex flex-col items-center justify-center space-y-4">
-                <div class="w-16 h-16 border-4 border-orange-500 border-dotted rounded-full animate-spin"></div>
-                <h2 class="text-xl font-semibold text-gray-700">Chargement...</h2>
-                <p class="text-gray-500">Merci de patienter quelques instants</p>
-            </div>
-        </body>
-    }
+    // if (loading) {
+    //     return <body class="flex items-center justify-center h-screen bg-gray-100">
+    //         <div class="flex flex-col items-center justify-center space-y-4">
+    //             <div class="w-16 h-16 border-4 border-orange-500 border-dotted rounded-full animate-spin"></div>
+    //             <h2 class="text-xl font-semibold text-gray-700">Chargement...</h2>
+    //             <p class="text-gray-500">Merci de patienter quelques instants</p>
+    //         </div>
+    //     </body>
+    // }
 
     return (
         <div className='min-h-screen bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
@@ -137,8 +137,45 @@ function SignIn() {
                                         </label>
                                     </div>
                             </div>
-                            <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-sm transition duration-300">
+                            {/* <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-sm transition duration-300">
                                 Se connecter
+                            </button> */}
+                            <button
+                                type="submit"
+                                className={`flex items-center justify-center p-3 text-white rounded-sm transition-all duration-300 ease-in-out ${
+                                loading
+                                    ? "bg-orange-400 cursor-not-allowed"
+                                    : "bg-orange-500 hover:bg-orange-600"
+                                }`}
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                <div className="flex items-center">
+                                    <svg
+                                    className="w-6 h-6 text-white animate-spin mr-2"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v8h8a8 8 0 11-16 0z"
+                                    ></path>
+                                    </svg>
+                                    <span>Connexion en cours...</span>
+                                </div>
+                                ) : (
+                                "Se connecter"
+                                )}
                             </button>
                         </form>
                         <div className="flex flex-col gap-4 items-center">

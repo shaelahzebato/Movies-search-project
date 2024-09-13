@@ -19,7 +19,11 @@ function MovieSearchResultsPage() {
 
     const [movieFetchData, setMovieFetchData] = useState([])
 
-    
+    const [errors, setErrors] = useState({
+        moviename: ""
+    });
+
+
     const handleChangeInput = (e) => {
         setInputValue(e.target.value)
     }
@@ -31,12 +35,33 @@ function MovieSearchResultsPage() {
         })
     }, [name])
 
+    // const searchMovies = (e) => {
+    //     e.preventDefault()
+    //     const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(inputValue)}`;
+    //     fetch(url).then((response) => response.json()).then((data) => {
+    //         setMovieFetchData(data.results)
+    //     })
+    // }
+
     const searchMovies = (e) => {
         e.preventDefault()
-        const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(inputValue)}`;
-        fetch(url).then((response) => response.json()).then((data) => {
-            setMovieFetchData(data.results)
-        })
+
+        let newErrors = {};
+
+        if(!inputValue) {
+            newErrors.moviename = "Le nom d'un film est requis.";
+            setErrors(newErrors);
+        }
+        else if(inputValue.length < 3) {
+            newErrors.moviename = "Le nom d'un film doit contenir au moins 3 caractères.";
+            setErrors(newErrors);
+        }
+        else if(inputValue.length >= 3) {
+            const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(inputValue)}`;
+            fetch(url).then((response) => response.json()).then((data) => {
+                setMovieFetchData(data.results)
+            })
+        }
     }
 
     return (
@@ -48,6 +73,7 @@ function MovieSearchResultsPage() {
                         <input value={inputValue} onChange={handleChangeInput} className='w-full p-2 rounded-sm focus:outline-none border-none' type="text" name="" id="" />
                         <button className='bg-orange-500 text-white px-4 rounded-sm'>Rechercher</button>
                     </form>
+                    {errors.moviename && <p className="text-red-500 text-xs italic">{errors.moviename}</p>}
                     <span className='text-gray-300'>{movieFetchData.length} résultats de la recherche.</span>
                 </div>
                 {name && (

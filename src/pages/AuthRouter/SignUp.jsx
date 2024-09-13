@@ -24,6 +24,7 @@ function SignUp() {
         userSurname: "",
         phoneNumber: ""
     });
+    const [loading, setLoading] = useState(false); // Gérer l'état de chargement
 
     
     // Expressions régulières pour valider les numéros de téléphone
@@ -114,9 +115,10 @@ function SignUp() {
                 localStorage.setItem('token', data.access_token);
                 if(data.success) {
                     toast.success(data.message)
-                    setTimeout(() => {
+                    setLoading(true)
+                    // setTimeout(() => {
                         window.location.href = '/signin';
-                    }, 3000)
+                    // }, 3000)
                 }
                 else {
                     toast.error(data.message)
@@ -262,8 +264,45 @@ function SignUp() {
                                     </select>
                                 </div>
                             </div>
-                            <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-sm transition duration-300">
+                            {/* <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-sm transition duration-300">
                                 S'inscrire
+                            </button> */}
+                             <button
+                                type="submit"
+                                className={`flex items-center justify-center p-3 text-white rounded-sm transition-all duration-300 ease-in-out ${
+                                loading
+                                    ? "bg-orange-400 cursor-not-allowed"
+                                    : "bg-orange-500 hover:bg-orange-600"
+                                }`}
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                <div className="flex items-center">
+                                    <svg
+                                    className="w-6 h-6 text-white animate-spin mr-2"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v8h8a8 8 0 11-16 0z"
+                                    ></path>
+                                    </svg>
+                                    <span>Inscription en cours...</span>
+                                </div>
+                                ) : (
+                                "S'inscrire"
+                                )}
                             </button>
                         </form>
                         <div className="flex flex-col gap-4 items-center">

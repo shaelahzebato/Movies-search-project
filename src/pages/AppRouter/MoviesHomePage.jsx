@@ -14,6 +14,9 @@ function MovieHomePage() {
  
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
 
+    const [errors, setErrors] = useState({
+        moviename: ""
+    });
 
     
     const handleChange = (e) => {
@@ -27,15 +30,27 @@ function MovieHomePage() {
 
     const userIsActive = (e) => {
         e.preventDefault()
+        
+        let newErrors = {};
+
         if(!isAuthenticated) {
             toast.error("Veuillez vous connecter ou créer un compte pour effectuer cette opération !")
         }
-        else {
+        else if(isAuthenticated && !movieNameEntered) {
+            newErrors.moviename = "Le nom d'un film est requis.";
+            setErrors(newErrors);
+        }
+        else if(isAuthenticated && movieNameEntered.length < 3) {
+            newErrors.moviename = "Le nom d'un film doit contenir au moins 3 caractères.";
+            setErrors(newErrors);
+        }
+        else if(isAuthenticated && movieNameEntered.length >= 3) {
             window.location.href = `/movies-results?name=${movieNameEntered}`;
         }
     }
 
-
+    
+   
     
     return (
         <div className='min-h-screen bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
@@ -53,6 +68,7 @@ function MovieHomePage() {
                         <button onClick={(e) => userIsActive(e)} className='flex-shrink-0 transform transition duration-300 bg-orange-500 hover:bg-orange-600 border-orange-500 hover:border-orange-700 text-lg border-4 text-white py-2.5 px-2 rounded text-center font-semibold'>Rechercher</button>
                         {/* <Link onClick={() => userIsActive()} to={`/movies-results?name=${movieNameEntered}`} className='flex-shrink-0 transform transition duration-300 bg-orange-500 hover:bg-orange-600 border-orange-500 hover:border-orange-700 text-lg border-4 text-white py-2.5 px-2 rounded text-center font-semibold'>Rechercher</Link> */}
                     </div>
+                    {errors.moviename && <p className="text-red-500 text-xs italic">{errors.moviename}</p>}
                 </form>
             </div>
         </div>

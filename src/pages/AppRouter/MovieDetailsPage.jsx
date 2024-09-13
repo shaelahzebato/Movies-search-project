@@ -18,8 +18,8 @@ function MovieDetailsPage() {
 
     const [similarMovies, setSimilarMovies] = useState([])
     
-    const getSimilarMovies = () => {
-        fetch('https://api.themoviedb.org/3/movie/popular?api_key=a7370479d17c1c001f3a2bb1dc10dd53')
+    const getSimilarMovies = (movieId) => {
+        fetch(`https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${apiKey}`)
         .then(response => response.json())
         .then(data => {
             const getResult = data.results;
@@ -30,7 +30,7 @@ function MovieDetailsPage() {
     }
 
     useEffect(() => {
-        getSimilarMovies()
+        getSimilarMovies(movieId)
     })
     
 

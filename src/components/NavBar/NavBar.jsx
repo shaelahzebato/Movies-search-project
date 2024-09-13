@@ -102,12 +102,12 @@ function NavBar() {
                                                                 </svg>
                                                                 <span>Profile</span>
                                                             </Link>
-                                                            <button className='flex items-center gap-2 px-2 bg-orange-500 hover:bg-orange-600 text-white rounded-b-sm  py-2'>
+                                                            <div className='flex items-center gap-2 px-2 bg-orange-500 hover:bg-orange-600 text-white rounded-b-sm  py-2'>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                                                                     <path d="M1.82209 15.9999C1.46654 15.9999 1.16283 15.874 0.910981 15.6221C0.659129 15.3703 0.533203 15.0666 0.533203 14.711V1.73322C0.533203 1.37767 0.659129 1.07397 0.910981 0.822114C1.16283 0.570262 1.46654 0.444336 1.82209 0.444336H7.95543V1.44434H1.82209C1.74802 1.44434 1.68135 1.47397 1.62209 1.53322C1.56283 1.59248 1.5332 1.65915 1.5332 1.73322V14.711C1.5332 14.7851 1.56283 14.8517 1.62209 14.911C1.68135 14.9703 1.74802 14.9999 1.82209 14.9999H7.95543V15.9999H1.82209ZM12.0888 11.5999L11.3554 10.8888L13.5332 8.73322H5.68876V7.711H13.511L11.3332 5.55545L12.0665 4.82211L15.4665 8.24434L12.0888 11.5999Z" fill="currentColor"></path>
                                                                 </svg>
                                                                 <button onClick={logout}>Se deconnecter</button>
-                                                            </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 )}
@@ -145,12 +145,12 @@ function NavBar() {
                                             </svg>
                                             <span>Profile</span>
                                         </Link>
-                                        <button className='flex items-center gap-2 px-2 bg-orange-500 hover:bg-orange-600 text-white rounded-b-sm  py-2'>
+                                        <div className='flex items-center gap-2 px-2 bg-orange-500 hover:bg-orange-600 text-white rounded-b-sm  py-2'>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                                                 <path d="M1.82209 15.9999C1.46654 15.9999 1.16283 15.874 0.910981 15.6221C0.659129 15.3703 0.533203 15.0666 0.533203 14.711V1.73322C0.533203 1.37767 0.659129 1.07397 0.910981 0.822114C1.16283 0.570262 1.46654 0.444336 1.82209 0.444336H7.95543V1.44434H1.82209C1.74802 1.44434 1.68135 1.47397 1.62209 1.53322C1.56283 1.59248 1.5332 1.65915 1.5332 1.73322V14.711C1.5332 14.7851 1.56283 14.8517 1.62209 14.911C1.68135 14.9703 1.74802 14.9999 1.82209 14.9999H7.95543V15.9999H1.82209ZM12.0888 11.5999L11.3554 10.8888L13.5332 8.73322H5.68876V7.711H13.511L11.3332 5.55545L12.0665 4.82211L15.4665 8.24434L12.0888 11.5999Z" fill="currentColor"></path>
                                             </svg>
                                             <button onClick={logout}>Se deconnecter</button>
-                                        </button>
+                                        </div>
                                     </div>
                                 </div>
                             )}
