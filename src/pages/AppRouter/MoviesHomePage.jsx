@@ -64,11 +64,11 @@ function MovieHomePage() {
                 </h1>
                 <form onSubmit={e => handleSubmit(e)} className="w-full mx-auto px-4">
                     <div className="flex flex-col gap-2">
+                        {errors.moviename && <p className="text-red-500 text-xs italic">{errors.moviename}</p>}
                         <input type="text" value={movieNameEntered} onChange={handleChange} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-4 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Entrez le nom d'un film..."/>
                         <button onClick={(e) => userIsActive(e)} className='flex-shrink-0 transform transition duration-300 bg-orange-500 hover:bg-orange-600 border-orange-500 hover:border-orange-700 text-lg border-4 text-white py-2.5 px-2 rounded text-center font-semibold'>Rechercher</button>
                         {/* <Link onClick={() => userIsActive()} to={`/movies-results?name=${movieNameEntered}`} className='flex-shrink-0 transform transition duration-300 bg-orange-500 hover:bg-orange-600 border-orange-500 hover:border-orange-700 text-lg border-4 text-white py-2.5 px-2 rounded text-center font-semibold'>Rechercher</Link> */}
                     </div>
-                    {errors.moviename && <p className="text-red-500 text-xs italic">{errors.moviename}</p>}
                 </form>
             </div>
         </div>

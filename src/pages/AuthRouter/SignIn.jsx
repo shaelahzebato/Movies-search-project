@@ -49,41 +49,48 @@ function SignIn() {
 
     const login = async (e) => {
         e.preventDefault()
-        if(enteredDataValidation()) {
-            await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    password: password,
-                }),
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log("data => ", data)
-                if(data.access_token !== undefined) {
-                    
-                    localStorage.setItem('token', data.access_token);
-                    if(data.success) {
+        setLoading(true)
+        try{
+            if(enteredDataValidation()) {
+                await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                    }),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log("data => ", data)
+                    if(data.access_token !== undefined) {
+                        
+                        localStorage.setItem('token', data.access_token);
+                        if(data.success) {
+                            // setLoading(true)
+                            toast.success(data.message ||'Connexion réussie!')
+                            // setTimeout(() => {
+                                window.location.href = '/';
+                                // }, 3000)
+                            }
+                            else {
+                                toast.error(data.message || "Echec ! Veuillez vérifier vos données, email, mot de passe...")
+                                // setLoading(true)
+                            }
+                        }
+                    else {
                         setLoading(true)
-                        toast.success(data.message ||'Connexion réussie!')
-                        // setTimeout(() => {
-                            window.location.href = '/';
-                            // }, 3000)
-                        }
-                        else {
-                            toast.error(data.message || "Echec ! Veuillez vérifier vos données, email, mot de passe...")
-                            setLoading(true)
-                        }
+                        toast.error(data.message || "Compte inexistant !")
                     }
-                else {
-                    setLoading(true)
-                    toast.error(data.message || "Compte inexistant !")
-                }
-            });
+                });
+            }
+        } catch (error) {
+            toast.error('Erreur lors de la connexion. Veuillez réessayer.');
+        } finally {
+            setLoading(false); // Arrêter le chargement après la réponse
         }
     }
 

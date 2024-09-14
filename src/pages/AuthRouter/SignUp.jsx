@@ -16,6 +16,9 @@ function SignUp() {
     const [country, setCountry] = useState("")
     const [countryList, setCountryList] = useState([])
     const [showPassword, setShowPassword] = useState(false); // État pour afficher/masquer le mot de passe
+    
+    const [emailMsg, setEmailMsg] = useState("")
+
 
     const [errors, setErrors] = useState({
         email: "",
@@ -93,47 +96,61 @@ function SignUp() {
 
     const register = (e) => {
         e.preventDefault()
-        if(enteredDataValidation()) {
-            fetch('https://symbian.stvffmn.com/nady/public/api/v1/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    nom: username,
-                    prenoms: userSurname,
-                    email: email,
-                    password: password,
-                    telephone: phoneNumber,
-                    pays_id: country
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Les de l'utilisateur inscrit :: ", data)
-                if(data.access_token !== undefined) {
-                    
-                    localStorage.setItem('token', data.access_token);
-                    if(data.success) {
-                        toast.success(data.message)
-                        setLoading(true)
-                        // setTimeout(() => {
-                            window.location.href = '/signin';
-                            // }, 3000)
+        setLoading(true)
+        try {
+            if(enteredDataValidation()) {
+                fetch('https://symbian.stvffmn.com/nady/public/api/v1/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nom: username,
+                        prenoms: userSurname,
+                        email: email,
+                        password: password,
+                        telephone: phoneNumber,
+                        pays_id: country
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Les de l'utilisateur inscrit :: ", data)
+                    console.log("Les de l'utilisateur email :: ", data.data.email.join(","))
+                    if(data.access_token !== undefined) {
+                        
+                        localStorage.setItem('token', data.access_token);
+                        if(data.success) {
+                            toast.success(data.message)
+                            // setLoading(true)
+                            // setTimeout(() => {
+                                // window.location.href = '/signin';
+                                // }, 3000)
+                            }
+                        else {
+                            toast.error(data.message)
+                            console.log("error :::", data.message);
+                            console.log("error email :::", data.email);
+                            setEmailMsg(data.data.email.join(","))
+                            
+                            // setLoading(true)
                         }
-                    else {
-                        toast.error(data.message)
-                        setLoading(true)
                     }
-                }
-                else {
-                    setLoading(true)
-                    toast.error(data.message || "Compte inexistant !")
-                }
-    
-            })
-            .catch(error => console.error('Error:', error));
+                    else {
+                        setLoading(true)
+                        toast.error(data.message || "Compte inexistant !")
+                        setEmailMsg(data.data.email.join(","))
+
+                    }
+        
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        } catch (error) {
+            toast.error('Erreur lors de la connexion. Veuillez réessayer.');
+        } finally {
+            setLoading(false); // Arrêter le chargement après la réponse
         }
     }
 
@@ -196,6 +213,7 @@ function SignUp() {
                                     {errors.userSurname && <p className="text-red-500 text-xs italic">{errors.userSurname}</p>}
                                 </div>
                                 <div className="mb-4">
+                                    <p className='text-lime-500'>{emailMsg}</p>
                                     <label className="block text-white text-lg font-medium mb-2" htmlFor="email">
                                     Email
                                     </label>
