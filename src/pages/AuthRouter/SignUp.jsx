@@ -116,32 +116,42 @@ function SignUp() {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Les de l'utilisateur inscrit :: ", data)
-                    console.log("Les de l'utilisateur email :: ", data.data.email.join(","))
+                    console.log("Les données de l'utilisateur inscrit :: ", data)
+                    console.log("Les données de l'utilisateur email :: ", data.data.email.join(","))
                     if(data.access_token !== undefined) {
                         
                         localStorage.setItem('token', data.access_token);
                         if(data.success) {
                             toast.success(data.message)
-                            // setLoading(true)
-                            // setTimeout(() => {
-                                // window.location.href = '/signin';
-                                // }, 3000)
-                            }
+                                //window.location.href = '/signin';
+                        }
                         else {
                             toast.error(data.message)
-                            console.log("error :::", data.message);
-                            console.log("error email :::", data.email);
-                            setEmailMsg(data.data.email.join(","))
-                            
-                            // setLoading(true)
                         }
                     }
                     else {
                         setLoading(true)
                         toast.error(data.message || "Compte inexistant !")
-                        setEmailMsg(data.data.email.join(","))
-
+                        let newErrors = {};
+                        if(data.data.email) {
+                            newErrors.email = data.data.email.join(",");
+                        }
+                        else if(data.data.password) {
+                            newErrors.password = data.data.password.join(",");
+                        }
+                        else if(data.data.nom) {
+                            newErrors.nom = data.data.nom.join(",");
+                        }
+                        else if(data.data.nom) {
+                            newErrors.prenoms = data.data.prenoms.join(",");
+                        }
+                        else if(data.data.telephone) {
+                            newErrors.telephone = data.data.telephone.join(",");
+                        }
+                        else if(data.data.pays_id) {
+                            newErrors.pays_id = data.data.pays_id.join(",");
+                        }
+                        setErrors(newErrors);
                     }
         
                 })
@@ -213,7 +223,6 @@ function SignUp() {
                                     {errors.userSurname && <p className="text-red-500 text-xs italic">{errors.userSurname}</p>}
                                 </div>
                                 <div className="mb-4">
-                                    <p className='text-lime-500'>{emailMsg}</p>
                                     <label className="block text-white text-lg font-medium mb-2" htmlFor="email">
                                     Email
                                     </label>

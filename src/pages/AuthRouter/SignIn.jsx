@@ -70,11 +70,8 @@ function SignIn() {
                         
                         localStorage.setItem('token', data.access_token);
                         if(data.success) {
-                            // setLoading(true)
                             toast.success(data.message ||'Connexion réussie!')
-                            // setTimeout(() => {
                                 window.location.href = '/';
-                                // }, 3000)
                             }
                             else {
                                 toast.error(data.message || "Echec ! Veuillez vérifier vos données, email, mot de passe...")
@@ -84,6 +81,14 @@ function SignIn() {
                     else {
                         setLoading(true)
                         toast.error(data.message || "Compte inexistant !")
+                        let newErrors = {};
+                        if(data.data.email) {
+                            newErrors.email = data.data.email.join(",");
+                        }
+                        else if(data.data.password) {
+                            newErrors.password = data.data.password.join(",");
+                        }
+                        setErrors(newErrors);
                     }
                 });
             }
@@ -93,6 +98,8 @@ function SignIn() {
             setLoading(false); // Arrêter le chargement après la réponse
         }
     }
+
+    //If email exist dans la DB ? mot de passe saisi === mot de passe qui existe déjà ? si oui connexion, sinon msg: mdp incorecte
 
     // if (loading) {
     //     return <body class="flex items-center justify-center h-screen bg-gray-100">
