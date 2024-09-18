@@ -41,7 +41,7 @@ function MovieHomePage() {
                     <p className="text-center">Recherchez vos films, des plus époustouflants</p>
                     <p className="text-center">ici <FontAwesomeIcon className="text-orange-500 font-semibold" icon={faAngleDoubleDown} />!</p>
                 </h1>
-                <form onSubmit={handleMovieSearch} className="w-full mx-auto px-4 max-md:bg-red-600">
+                <form onSubmit={handleMovieSearch} className="w-full mx-auto px-4">
                     <div className="flex flex-col gap-2">
                         {errors.movieTitle && <p className="text-red-500 text-xs italic">{errors.movieTitle}</p>}
                         <input
