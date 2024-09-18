@@ -34,8 +34,8 @@ function MovieHomePage() {
     return (
         <div className="min-h-screen bg-center bg-cover" style={{ backgroundImage: `url(${homepagebg})` }}>
             <NavBar />
-            <div className="fixed left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center gap-10
-                top-[40%] md:top-1/2 md:-translate-y-1/2">
+            <div className="max-md:w-full fixed left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center gap-10
+                top-[40%] md:top-1/2 md:-translate-y-1/2 ">
                 <h1 className="text-white text-3xl lg:text-4xl flex flex-col items-center justify-center gap-2">
                     <p className="text-center">Bienvenue sur <strong className="text-orange-500">BoxFun...</strong></p>
                     <p className="text-center">Recherchez vos films, des plus époustouflants</p>
