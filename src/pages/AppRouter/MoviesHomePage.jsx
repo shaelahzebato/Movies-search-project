@@ -68,12 +68,6 @@ export default MovieHomePage;
 
 
 
-
-
-
-
-
-
 // import React, { useEffect, useState } from 'react'
 
 // import homepagebg from '../../images/accueil–1.png'
