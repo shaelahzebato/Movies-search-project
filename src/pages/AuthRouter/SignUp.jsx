@@ -108,6 +108,7 @@ function SignUp() {
                 localStorage.setItem('token', data.access_token);
                 if (data.success) {
                     toast.success(data.message);
+                    window.location.href = '/';
                 } else {
                     toast.error(data.message);
                 }
