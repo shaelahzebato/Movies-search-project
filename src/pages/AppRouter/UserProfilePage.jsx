@@ -54,7 +54,7 @@ function UserProfilePage() {
         return (
             <div className='w-full min-h-screen bg-cover bg-center bg-black'>
                 <NavBar/>
-                <div className="bg-slate-800 py-6">
+                <div className="bg-[#1a1919] py-6">
                     <div className="container mx-auto">
                         <Link className='flex items-center gap-4 py-4 hover:text-orange-500 px-2'>
                             <img className='w-24 h-20 object-cover bg-center rounded-md' src={moi} alt="" />
