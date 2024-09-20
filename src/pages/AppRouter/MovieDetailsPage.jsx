@@ -106,15 +106,6 @@ function MovieDetailsPage() {
                                     </div>
                                     <p className="text-sm mt-4">{movieDetails?.overview}</p>
                                 </div>
-
-                                {/* Boutons d'actions */}
-                                <ul className="flex gap-4 justify-center mt-6">
-                                    {actionIcons.map((icon, index) => (
-                                        <li key={index} className="text-2xl rounded-full p-2 bg-black/50 hover:bg-white/90 duration-500 ease-out border border-gray-700 font-semibold text-orange-500 cursor-pointer">
-                                            {icon}
-                                        </li>
-                                    ))}
-                                </ul>
                                 <div className="flex justify-between items-center mt-2">
                                     <span className="text-orange-400 text-sm font-semibold">${'100'}</span>
                                     <button 
@@ -125,6 +116,16 @@ function MovieDetailsPage() {
                                         <span>Panier</span>
                                     </button>
                                 </div>
+
+                                {/* Boutons d'actions */}
+                                <ul className="flex gap-4 justify-center mt-6">
+                                    {actionIcons.map((icon, index) => (
+                                        <li key={index} className="text-2xl rounded-full p-2 bg-black/50 hover:bg-white/90 duration-500 ease-out border border-gray-700 font-semibold text-orange-500 cursor-pointer">
+                                            {icon}
+                                        </li>
+                                    ))}
+                                </ul>
+                                
                                 {/* Films similaires */}
                                 <div className="flex flex-col gap-4 mt-10">
                                     <h2 className="text-2xl font-semibold">Films similaires</h2>
