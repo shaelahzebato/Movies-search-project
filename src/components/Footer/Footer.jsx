@@ -32,35 +32,29 @@ function Footer() {
                     </div>
 
                     <div className="col-span-6 grid grid-cols-1 lg:flex lg:gap-0 gap-6">
-                        <div className="col-span-2 flex flex-col gap-4">
+                        <div className="col-span-2 flex flex-col gap-2 lg:gap-4">
                             <h2 className="font-bold text-lg">Lorem, ipsum.</h2>
                             <ul className="flex flex-col text-gray-300">
                                 <li className="hover:text-orange-500 transition-colors">Lorem, ipsum dolor.</li>
-                                <li className="hover:text-orange-500 transition-colors">
-                                Necessitatibus, voluptates veritatis.
-                                </li>
+                                <li className="hover:text-orange-500 transition-colors">Necessitatibus, voluptates veritatis.</li>
                                 <li className="hover:text-orange-500 transition-colors">Corrupti, veritatis sint.</li>
                             </ul>
                         </div>
 
-                        <div className="col-span-2 flex flex-col gap-4">
+                        <div className="col-span-2 flex flex-col gap-2 lg:gap-4">
                             <h2 className="font-bold text-lg">Assumenda, illum.</h2>
                             <ul className="flex flex-col text-gray-300">
                                 <li className="hover:text-orange-500 transition-colors">Lorem, ipsum dolor.</li>
-                                <li className="hover:text-orange-500 transition-colors">
-                                Necessitatibus, voluptates veritatis.
-                                </li>
+                                <li className="hover:text-orange-500 transition-colors">Necessitatibus, voluptates veritatis.</li>
                                 <li className="hover:text-orange-500 transition-colors">Corrupti, veritatis sint.</li>
                             </ul>
                         </div>
 
-                        <div className="col-span-2 flex flex-col gap-4">
+                        <div className="col-span-2 flex flex-col gap-2 lg:gap-4">
                             <h2 className="font-bold text-lg">Eveniet, cupiditate?</h2>
                             <ul className="flex flex-col text-gray-300">
                                 <li className="hover:text-orange-500 transition-colors">Lorem, ipsum dolor.</li>
-                                <li className="hover:text-orange-500 transition-colors">
-                                Necessitatibus, voluptates veritatis.
-                                </li>
+                                <li className="hover:text-orange-500 transition-colors">Necessitatibus, voluptates veritatis.</li>
                                 <li className="hover:text-orange-500 transition-colors">Corrupti, veritatis sint.</li>
                             </ul>
                         </div>
