@@ -73,7 +73,7 @@ function Footer() {
                             </button>
                         </form>
                         <div className="flex items-center gap-2 mt-10">
-                            <h2 className="text-sm text-gray-300">Suivre :</h2>
+                            <h2 className="text-sm text-gray-300">Suivez-nous :</h2>
                             <div className="flex items-center gap-4">
                                 <FontAwesomeIcon
                                 icon={faFacebook}
