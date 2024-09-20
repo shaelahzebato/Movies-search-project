@@ -11,28 +11,28 @@ function Footer() {
         <section className="w-full bg-[#1b1b1b] text-white px-6 py-12">
             <div className="container mx-auto flex flex-col gap-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                    <div className="col-span-3 flex flex-col gap-6">
+                    <div className="col-span-3 flex flex-col gap-2 lg:gap-6">
                         <img
                         src={logo}
                         alt="Website logo"
                         className="w-36 transition-transform duration-300 hover:scale-110"
                         />
-                        <div className="flex items-center gap-2 text-gray-300">
-                        <span>Email:</span>
-                        <strong className="hover:text-orange-500 transition-colors">
-                            persoadress@boxfun.com
-                        </strong>
+                        <div className="flex items-center gap-1 lg:gap-2 text-gray-300">
+                            <span>Email:</span>
+                            <strong className="hover:text-orange-500 transition-colors">
+                                persoadress@boxfun.com
+                            </strong>
                         </div>
                         <div className="flex flex-col justify-center gap-1 text-gray-300">
-                        <span className="text-sm">SERVICES</span>
-                        <strong className="text-lg font-bold">
-                            <FontAwesomeIcon icon={faPlus} /> (225) 0789807498
-                        </strong>
+                            <span className="text-sm">SERVICES</span>
+                            <strong className="text-lg font-bold">
+                                <FontAwesomeIcon icon={faPlus} /> (225) 0789807498
+                            </strong>
                         </div>
                     </div>
 
                     <div className="col-span-6 grid grid-cols-1 lg:flex lg:gap-0 gap-6">
-                        <div className="col-span-2 flex flex-col gap-2 lg:gap-4">
+                        <div className="col-span-2 flex flex-col gap-1 lg:gap-4">
                             <h2 className="font-bold text-lg">Lorem, ipsum.</h2>
                             <ul className="flex flex-col text-gray-300">
                                 <li className="hover:text-orange-500 transition-colors">Lorem, ipsum dolor.</li>
@@ -41,7 +41,7 @@ function Footer() {
                             </ul>
                         </div>
 
-                        <div className="col-span-2 flex flex-col gap-2 lg:gap-4">
+                        <div className="col-span-2 flex flex-col gap-1 lg:gap-4">
                             <h2 className="font-bold text-lg">Assumenda, illum.</h2>
                             <ul className="flex flex-col text-gray-300">
                                 <li className="hover:text-orange-500 transition-colors">Lorem, ipsum dolor.</li>
@@ -50,7 +50,7 @@ function Footer() {
                             </ul>
                         </div>
 
-                        <div className="col-span-2 flex flex-col gap-2 lg:gap-4">
+                        <div className="col-span-2 flex flex-col gap-1 lg:gap-4">
                             <h2 className="font-bold text-lg">Eveniet, cupiditate?</h2>
                             <ul className="flex flex-col text-gray-300">
                                 <li className="hover:text-orange-500 transition-colors">Lorem, ipsum dolor.</li>
