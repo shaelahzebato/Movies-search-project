@@ -26,19 +26,43 @@ function MovieShoppingCartPage() {
         fetchMoviesForShopCart()
     })
 
-    const incrementQuantity = () => {
-        setQuantity(prevQuantity => prevQuantity + 1);
-    };
+    // const incrementQuantity = () => {
+    //     setQuantity(prevQuantity => prevQuantity + 1);
+    // };
     
-    const decrementQuantity = () => {
-        setQuantity(prevQuantity => {
-        if (prevQuantity > 1) {
-                return prevQuantity - 1;
-            } else {
-                return prevQuantity;
-            }
-        });
-    };
+    // const decrementQuantity = () => {
+    //     setQuantity(prevQuantity => {
+    //     if (prevQuantity > 1) {
+    //             return prevQuantity - 1;
+    //         } else {
+    //             return prevQuantity;
+    //         }
+    //     });
+    // };
+
+    // Initialiser l'état pour les quantités de chaque produit
+  const [quantities, setQuantities] = useState(
+    moviesShopCart.map(() => 1) // Commencer chaque produit avec une quantité de 1
+  );
+
+  // Fonction pour décrémenter la quantité d'un produit spécifique
+  const decrementQuantity = (index) => {
+    setQuantities((prevQuantities) =>
+      prevQuantities.map((quantity, i) =>
+        i === index && quantity > 1 ? quantity - 1 : quantity
+      )
+    );
+  };
+
+  // Fonction pour incrémenter la quantité d'un produit spécifique
+  const incrementQuantity = (index) => {
+    setQuantities((prevQuantities) =>
+      prevQuantities.map((quantity, i) =>
+        i === index ? quantity + 1 : quantity
+      )
+    );
+  };
+
 
     return (
         <>
@@ -68,7 +92,66 @@ function MovieShoppingCartPage() {
                                     </div>
                                 </div>
                             </div>
-                            {
+                            {moviesShopCart.map((cart, index) => (
+        <div key={index} className="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6  border-b border-gray-200 group">
+          <div className="w-full md:max-w-[126px]">
+            <img
+              src={`${imgBase}${cart?.backdrop_path}`}
+              alt="perfume bottle"
+              className="mx-auto rounded-xl"
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 w-full">
+            <div className="md:col-span-2">
+              <div className="flex flex-col max-[500px]:items-center gap-3">
+                <h6 className="font-semibold text-base leading-7 text-black">
+                  {cart.title}
+                </h6>
+                <h6 className="font-normal text-base leading-7 text-gray-500">
+                  Serie
+                </h6>
+                <h6 className="font-medium text-base leading-7 text-gray-600 transition-all duration-300 group-hover:text-orange-600">
+                  $120.00
+                </h6>
+              </div>
+            </div>
+            <div className="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
+              <div className="flex items-center h-full">
+                <button
+                  onClick={() => decrementQuantity(index)}
+                  className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
+                >
+                  <FontAwesomeIcon
+                    className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
+                    icon={faMinus}
+                  />
+                </button>
+                <input
+                  type="text"
+                  className="border-y border-gray-200 outline-none text-gray-900 font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-gray-900 py-[12px] text-center bg-transparent"
+                  value={quantities[index]} // Utilise la quantité spécifique à ce produit
+                  readOnly
+                />
+                <button
+                  onClick={() => incrementQuantity(index)}
+                  className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
+                >
+                  <FontAwesomeIcon
+                    className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
+                    icon={faPlus}
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center max-[500px]:justify-center md:justify-end max-md:mt-3 h-full">
+              <p className="font-bold text-lg leading-8 text-gray-600 text-center transition-all duration-300 group-hover:text-orange-600">
+                $120.00
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+                            {/* {
                                 moviesShopCart.map((cart, index) => (
                                     <div key={index} className="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6  border-b border-gray-200 group">
                                         <div className="w-full md:max-w-[126px]">
@@ -101,7 +184,7 @@ function MovieShoppingCartPage() {
                                         </div>
                                     </div>
                                 ))
-                            }
+                            } */}
                             <div className="flex items-center justify-end mt-8">
                                 <Link to={"/movies-results"} className="flex items-center px-5 py-3 rounded-full gap-2 border-none outline-0 group font-semibold text-lg leading-8 text-orange-500 shadow-sm shadow-transparent transition-all duration-500 hover:text-orange-600 italic">
                                     Acheter à nouveau
