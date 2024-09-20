@@ -4,7 +4,7 @@ import MovieHomePage from './MoviesHomePage';
 import MovieSearchResultsPage from './MoviesSearchResultsPage';
 import MovieDetailsPage from './MovieDetailsPage';
 import MovieShoppingCartPage from './MoviesShoppingCartPage';
-import UserAccountPage from './UserAccountPage';
+import UserProfilePage from './UserProfilePage';
 
 function AppRouter() {
 
@@ -14,7 +14,7 @@ function AppRouter() {
             <Route path='/movies-results' element={<MovieSearchResultsPage/>}/>
             <Route path='/movie-details' element={<MovieDetailsPage/>}/>
             <Route path='/movies-shopping-cart' element={<MovieShoppingCartPage/>}/>
-            <Route path='/my-account' element={<UserAccountPage/>}/>
+            <Route path='/my-account' element={<UserProfilePage/>}/>
             <Route path='/*' element={<Navigate replace to="/" />} />
         </Routes>
     );

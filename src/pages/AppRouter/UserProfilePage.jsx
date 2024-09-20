@@ -3,7 +3,7 @@ import NavBar from '../../components/NavBar/NavBar';
 import moi from '../../images/moii.png'
 import { Link } from 'react-router-dom';
 
-function UserAccountPage() {
+function UserProfilePage() {
     const [activeTab, setActiveTab] = useState(0);
 
     const tabs = [
@@ -93,4 +93,4 @@ function UserAccountPage() {
     
 }
 
-export default UserAccountPage;
+export default UserProfilePage;
