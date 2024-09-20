@@ -65,7 +65,7 @@ function Footer() {
                         <form className="flex">
                             <input
                                 type="text"
-                                className="flex-grow bg-black focus:border focus:border-orange-500 outline-none p-3 rounded-l-sm"
+                                className="flex-grow bg-black focus:border focus:border-orange-500 outline-none p-3 rounded-l-sm sm:rounded-l-none"
                                 placeholder="Email*"
                             />
                             <button className="bg-orange-500 px-4 py-2 rounded-r-sm transition-transform duration-300 hover:scale-105">
