@@ -1,4 +1,4 @@
-import { faArrowRight, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRight, faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -26,43 +26,19 @@ function MovieShoppingCartPage() {
         fetchMoviesForShopCart()
     })
 
-    // const incrementQuantity = () => {
-    //     setQuantity(prevQuantity => prevQuantity + 1);
-    // };
+    const incrementQuantity = () => {
+        setQuantity(prevQuantity => prevQuantity + 1);
+    };
     
-    // const decrementQuantity = () => {
-    //     setQuantity(prevQuantity => {
-    //     if (prevQuantity > 1) {
-    //             return prevQuantity - 1;
-    //         } else {
-    //             return prevQuantity;
-    //         }
-    //     });
-    // };
-
-    // Initialiser l'état pour les quantités de chaque produit
-  const [quantities, setQuantities] = useState(
-    moviesShopCart.map(() => 1) // Commencer chaque produit avec une quantité de 1
-  );
-
-  // Fonction pour décrémenter la quantité d'un produit spécifique
-  const decrementQuantity = (index) => {
-    setQuantities((prevQuantities) =>
-      prevQuantities.map((quantity, i) =>
-        i === index && quantity > 1 ? quantity - 1 : quantity
-      )
-    );
-  };
-
-  // Fonction pour incrémenter la quantité d'un produit spécifique
-  const incrementQuantity = (index) => {
-    setQuantities((prevQuantities) =>
-      prevQuantities.map((quantity, i) =>
-        i === index ? quantity + 1 : quantity
-      )
-    );
-  };
-
+    const decrementQuantity = () => {
+        setQuantity(prevQuantity => {
+        if (prevQuantity > 1) {
+                return prevQuantity - 1;
+            } else {
+                return prevQuantity;
+            }
+        });
+    };
 
     return (
         <>
@@ -92,66 +68,7 @@ function MovieShoppingCartPage() {
                                     </div>
                                 </div>
                             </div>
-                            {moviesShopCart.map((cart, index) => (
-        <div key={index} className="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6  border-b border-gray-200 group">
-          <div className="w-full md:max-w-[126px]">
-            <img
-              src={`${imgBase}${cart?.backdrop_path}`}
-              alt="perfume bottle"
-              className="mx-auto rounded-xl"
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 w-full">
-            <div className="md:col-span-2">
-              <div className="flex flex-col max-[500px]:items-center gap-3">
-                <h6 className="font-semibold text-base leading-7 text-black">
-                  {cart.title}
-                </h6>
-                <h6 className="font-normal text-base leading-7 text-gray-500">
-                  Serie
-                </h6>
-                <h6 className="font-medium text-base leading-7 text-gray-600 transition-all duration-300 group-hover:text-orange-600">
-                  $120.00
-                </h6>
-              </div>
-            </div>
-            <div className="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
-              <div className="flex items-center h-full">
-                <button
-                  onClick={() => decrementQuantity(index)}
-                  className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
-                >
-                  <FontAwesomeIcon
-                    className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
-                    icon={faMinus}
-                  />
-                </button>
-                <input
-                  type="text"
-                  className="border-y border-gray-200 outline-none text-gray-900 font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-gray-900 py-[12px] text-center bg-transparent"
-                  value={quantities[index]} // Utilise la quantité spécifique à ce produit
-                  readOnly
-                />
-                <button
-                  onClick={() => incrementQuantity(index)}
-                  className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
-                >
-                  <FontAwesomeIcon
-                    className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
-                    icon={faPlus}
-                  />
-                </button>
-              </div>
-            </div>
-            <div className="flex items-center max-[500px]:justify-center md:justify-end max-md:mt-3 h-full">
-              <p className="font-bold text-lg leading-8 text-gray-600 text-center transition-all duration-300 group-hover:text-orange-600">
-                $120.00
-              </p>
-            </div>
-          </div>
-        </div>
-      ))}
-                            {/* {
+                            {
                                 moviesShopCart.map((cart, index) => (
                                     <div key={index} className="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6  border-b border-gray-200 group">
                                         <div className="w-full md:max-w-[126px]">
@@ -168,7 +85,14 @@ function MovieShoppingCartPage() {
                                             <div className="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
                                                 <div className="flex items-center h-full">
                                                     <button onClick={(e) => decrementQuantity(e)} className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
-                                                        <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faMinus}/>
+                                                        {quantity === 1 ? 
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-black hover:text-orange-500 transition duration-300 ease-in-out">
+                                                              <path d="M9 3H7.5a1.5 1.5 0 0 0-1.5 1.5v.75H3.75a.75.75 0 0 0 0 1.5H5v12A2.25 2.25 0 0 0 7.25 21.75h9.5A2.25 2.25 0 0 0 19 19.5V7.5h1.25a.75.75 0 0 0 0-1.5H18v-.75A1.5 1.5 0 0 0 16.5 3H15V1.5A1.5 1.5 0 0 0 13.5 0h-3A1.5 1.5 0 0 0 9 1.5V3Zm1.5-1.5h3V3h-3V1.5Zm-3 6.75a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-9Zm6 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-9Z"/>
+                                                            </svg>
+                                                          
+                                                        :
+                                                            <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faMinus}/>    
+                                                        }
                                                     </button>
                                                     <input type="text"
                                                         className="border-y border-gray-200 outline-none text-gray-900 font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-gray-900 py-[12px]  text-center bg-transparent"
@@ -184,7 +108,7 @@ function MovieShoppingCartPage() {
                                         </div>
                                     </div>
                                 ))
-                            } */}
+                            }
                             <div className="flex items-center justify-end mt-8">
                                 <Link to={"/movies-results"} className="flex items-center px-5 py-3 rounded-full gap-2 border-none outline-0 group font-semibold text-lg leading-8 text-orange-500 shadow-sm shadow-transparent transition-all duration-500 hover:text-orange-600 italic">
                                     Acheter à nouveau
