@@ -7,6 +7,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import apiKey from '../../Api/Api'
 import imgBase from '../../Api/imgBase';
 import NavBar from '../../components/NavBar/NavBar'
+import toast from 'react-hot-toast';
 
 //Chargement film similaire !!!
 
@@ -14,8 +15,10 @@ function MovieDetailsPage() {
 
     const [searchParams] = useSearchParams();
     const movieId = searchParams.get('id');
-    const [movieDetails, setMovieDetails] = useState(null);
+    const [movieDetails, setMovieDetails] = useState();
     const [similarMovies, setSimilarMovies] = useState([]);
+    const [cart, setCart] = useState([]);
+
 
     const actionIcons = [
         (
@@ -76,6 +79,13 @@ function MovieDetailsPage() {
         setCurrentIndex(newIndex);
     };
 
+    const addToCart = (movieId) => {
+        // Trouvez le film correspondant avec movieId
+        if (movieDetails?.id === movieId) {
+            setCart([...cart, movieDetails]);
+            toast.success(`${movieDetails.title} a été ajouté au panier`);
+        }
+    };
 
     return (
         <>
@@ -109,7 +119,7 @@ function MovieDetailsPage() {
                                 <div className="flex justify-between items-center mt-2">
                                     <span className="text-orange-400 text-sm font-semibold">${'100'}</span>
                                     <button 
-                                        // onClick={() => addToCart(movie.id)} 
+                                        onClick={() => addToCart(movieDetails?.id)} 
                                         className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
                                     >
                                         <FontAwesomeIcon icon={faPlus}/>
@@ -250,15 +260,15 @@ function MovieDetailsPage() {
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-center mt-2">
-                                            <span className="text-orange-400 text-sm font-semibold">${"100" || '100'}</span>
-                                            <button 
-                                                // onClick={() => addToCart(movie.id)} 
-                                                className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
-                                            >
-                                                <FontAwesomeIcon icon={faPlus}/>
-                                                <span>Panier</span>
-                                            </button>
-                                        </div>
+                                    <span className="text-orange-400 text-sm font-semibold">${'100'}</span>
+                                    <button 
+                                        onClick={() => addToCart(movieDetails?.id)} 
+                                        className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
+                                    >
+                                        <FontAwesomeIcon icon={faPlus}/>
+                                        <span>Panier</span>
+                                    </button>
+                                </div>
                                 <div className="flex flex-col gap-4">
                                     <h2 className='text-2xl'>Films similaires</h2>
                                     <div className="grid grid-cols-6 gap-4">

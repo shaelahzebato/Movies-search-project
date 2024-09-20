@@ -63,12 +63,16 @@ function MovieSearchResultsPage() {
     const addToCart = (movieId) => {
         // Trouvez le film correspondant avec movieId
         const movie = movieFetchData.find(movie => movie.id === movieId);
+        console.log("movie :::", movie);
+        
         if (movie) {
             setCart([...cart, movie]);
-            alert(`${movie.title} a été ajouté au panier`);
+            toast.success(`${movie.title} a été ajouté au panier`);
         }
     };
 
+    console.log("movieFetchData >>>>>>> ", movieFetchData);
+    
 
     return (
         <div className='min-h-screen bg-cover bg-center' style={{ backgroundImage: `url(${searchImg})` }}>
