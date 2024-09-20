@@ -14,7 +14,7 @@ function AppRouter() {
             <Route path='/movies-results' element={<MovieSearchResultsPage/>}/>
             <Route path='/movie-details' element={<MovieDetailsPage/>}/>
             <Route path='/movies-shopping-cart' element={<MovieShoppingCartPage/>}/>
-            <Route path='/my-account' element={<UserProfilePage/>}/>
+            <Route path='/profile' element={<UserProfilePage/>}/>
             <Route path='/*' element={<Navigate replace to="/" />} />
         </Routes>
     );

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import NavBar from '../../components/NavBar/NavBar'
+import Footer from '../../components/Footer/Footer'
 
 function MovieShoppingCartPage() {
 
@@ -144,6 +145,7 @@ function MovieShoppingCartPage() {
                     </div>
                 </div>
             </section>
+            <Footer/>
         </>
     )
 }

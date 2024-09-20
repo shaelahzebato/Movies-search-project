@@ -31,8 +31,6 @@ function MovieHomePage() {
             setErrors(newErrors);
         } else {
             navigate(`/movies-results?name=${encodeURIComponent(movieTitle)}`);
-            // navigate(`/movies-results?name=${movieTitle}`);
-            // window.location.href = `/movies-results?name=${movieTitle}`;
         }
     };
   
