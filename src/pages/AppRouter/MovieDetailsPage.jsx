@@ -139,6 +139,31 @@ function MovieDetailsPage() {
                                             className="max-h-96 object-cover rounded-lg"
                                         />
                                     </div>
+                                    <div className="flex flex-col gap-4">
+                                            <div className="flex items-center">
+                                                <div className="flex items-center gap-1">
+                                                    {[...Array(5)].map((_, index) => (
+                                                    <svg
+                                                        key={index}
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill={index < Math.round(movieDetails?.vote_average / 2) ? "currentColor" : "none"}
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                        className="w-5 h-5 text-yellow-400"
+                                                    >
+                                                        <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.478 4.55a1 1 0 00.95.69h4.788c.969 0 1.371 1.24.588 1.81l-3.876 2.826a1 1 0 00-.364 1.118l1.478 4.55c.3.921-.755 1.688-1.538 1.118l-3.876-2.826a1 1 0 00-1.176 0l-3.876 2.826c-.783.57-1.837-.197-1.538-1.118l1.478-4.55a1 1 0 00-.364-1.118L2.733 9.977c-.783-.57-.381-1.81.588-1.81h4.788a1 1 0 00.95-.69l1.478-4.55z"
+                                                        />
+                                                    </svg>
+                                                    ))}
+                                                </div>
+                                                <span className="ml-2 text-sm text-white">({movieDetails?.vote_average}/10)</span>
+                                            </div>
+                                            <p className="text-sm text-white mb-4">Date de sortie : {movieDetails?.release_date}</p>
+                                        </div>
                                     <p className="text-sm mt-4">{movieDetails?.overview}</p>
                                 </div>
                                 <div className="flex justify-between items-center mt-2">
@@ -248,26 +273,35 @@ function MovieDetailsPage() {
                         <div className="container mx-auto py-10">
                             <div className="flex flex-col gap-16">
                                 <div className="flex flex-col gap-14">
+                                    <h1 className='text-6xl font-bold text-center'>{movieDetails?.title}</h1>
                                     <div className="max-w-6xl mx-auto">
                                         <img src={`${imgBase}${movieDetails?.backdrop_path || movieDetails?.poster_path}`} alt={`${movieDetails?.title} backdrop`} />
                                     </div>
                                     <div className="w-full flex flex-col gap-10">
                                         <div className="flex flex-col gap-4">
-                                            <h1 className='text-6xl font-bold'>{movieDetails?.title}</h1>
-                                            <div className="flex items-center gap-1">
-                                                {[...Array(3)].map((_, index) => (
-                                                    <small key={index} className='text-sm text-yellow-400'>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                                                            <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </small>
-                                                ))}
-                                                <small className='text-sm text-white'>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                                                        <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
+                                            <div className="flex items-center">
+                                                <div className="flex items-center gap-1">
+                                                    {[...Array(5)].map((_, index) => (
+                                                    <svg
+                                                        key={index}
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill={index < Math.round(movieDetails?.vote_average / 2) ? "currentColor" : "none"}
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                        className="w-5 h-5 text-yellow-400"
+                                                    >
+                                                        <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.478 4.55a1 1 0 00.95.69h4.788c.969 0 1.371 1.24.588 1.81l-3.876 2.826a1 1 0 00-.364 1.118l1.478 4.55c.3.921-.755 1.688-1.538 1.118l-3.876-2.826a1 1 0 00-1.176 0l-3.876 2.826c-.783.57-1.837-.197-1.538-1.118l1.478-4.55a1 1 0 00-.364-1.118L2.733 9.977c-.783-.57-.381-1.81.588-1.81h4.788a1 1 0 00.95-.69l1.478-4.55z"
+                                                        />
                                                     </svg>
-                                                </small>
+                                                    ))}
+                                                </div>
+                                                <span className="ml-2 text-sm text-white">({movieDetails?.vote_average}/10)</span>
                                             </div>
+                                            <p className="text-sm text-white mb-4">Date de sortie : {movieDetails?.release_date}</p>
                                         </div>
                                         <p className='text-xl'>{movieDetails?.overview}</p>
                                         <ul className="flex gap-4">
@@ -311,8 +345,8 @@ function MovieDetailsPage() {
                                         </ul>
                                     </div>
                                 </div>
-                                <div className="flex justify-between items-center mt-2">
-                                    <span className="text-orange-400 text-sm font-semibold">${'100'}</span>
+                                <div className="flex items-center gap-6 mt-2">
+                                    <span className="text-orange-400 text-lg font-semibold">${'100'}</span>
                                     <button 
                                         onClick={() => addToCart(movieDetails?.id)} 
                                         className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
