@@ -80,7 +80,7 @@ function MovieSearchResultsPage() {
                         <input 
                             value={inputValue} 
                             onChange={handleChangeInput} 
-                            className='w-full p-3 rounded-sm focus:outline-none border-2 border-gray-300 bg-white shadow-md transition duration-300 ease-in-out focus:border-orange-500' 
+                            className={`w-full p-3 rounded-sm focus:outline-none border-2 border-gray-300 bg-white shadow-md transition duration-300 ease-in-out focus:border-orange-500 ${errors.moviename ? "border-2 border-red-500 focus:ring-0" : ""}`}
                             type="text" 
                             placeholder="Recherchez un film..."
                         />

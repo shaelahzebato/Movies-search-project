@@ -9,6 +9,7 @@ import apiKey from '../../Api/Api'
 import imgBase from '../../Api/imgBase';
 import NavBar from '../../components/NavBar/NavBar'
 import toast from 'react-hot-toast';
+import Footer from '../../components/Footer/Footer';
 
 //Chargement film similaire !!!
 
@@ -164,7 +165,7 @@ function MovieDetailsPage() {
                                             </div>
                                             <p className="text-sm text-white mb-4">Date de sortie : {movieDetails?.release_date}</p>
                                         </div>
-                                    <p className="text-sm mt-4">{movieDetails?.overview}</p>
+                                    <p className="text-sm">{movieDetails?.overview}</p>
                                 </div>
                                 <div className="flex justify-between items-center mt-2">
                                     <span className="text-orange-400 text-sm font-semibold">${'100'}</span>
@@ -303,7 +304,7 @@ function MovieDetailsPage() {
                                             </div>
                                             <p className="text-sm text-white mb-4">Date de sortie : {movieDetails?.release_date}</p>
                                         </div>
-                                        <p className='text-xl'>{movieDetails?.overview}</p>
+                                        <p className='text-xl -mt-4'>{movieDetails?.overview}</p>
                                         <ul className="flex gap-4">
                                             {actionIcons.map((icon, index) => (
                                                 <li key={index} className="text-2xl rounded-full p-2 bg-black/50 hover:bg-white/90 duration-500 ease-out border border-gray-700 font-semibold text-orange-500 cursor-pointer">
@@ -386,6 +387,7 @@ function MovieDetailsPage() {
                     </div>
                 </div>
             </div>
+            <Footer/>
         </>
     )
 }

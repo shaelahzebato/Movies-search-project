@@ -266,7 +266,7 @@ function SignUp() {
                                 disabled={loading}
                             >
                                 {loading ? (
-                                    <div className="flex items-center">
+                                    <div className="flex items-center gap-2">
                                         <div className="h-4 w-4 rounded-full border-2 border-dashed animate-spin"></div>
                                         <span>Inscription en cours...</span>
                                     </div>

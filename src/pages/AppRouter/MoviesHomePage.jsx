@@ -55,7 +55,7 @@ function MovieHomePage() {
                             type="text"
                             value={movieTitle}
                             onChange={handleInputChange}
-                            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-4 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            className={`appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-4 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 ${errors.movieTitle ? "border-2 border-red-500 focus:ring-0" : ""}`}
                             placeholder="Entrez le nom d'un film..."
                         />
                         <button
