@@ -24,11 +24,11 @@ function SignIn() {
 
         // Validation de l'email
         if (!email) {
-        newErrors.email = "L'email est requis.";
-        valid = false;
+            newErrors.email = "L'email est requis.";
+            valid = false;
         } else if (!/\S+@\S+\.\S+/.test(email)) {
-        newErrors.email = "L'email n'est pas valide.";
-        valid = false;
+            newErrors.email = "L'email n'est pas valide.";
+            valid = false;
         }
 
         // Validation du mot de passe
@@ -57,12 +57,12 @@ function SignIn() {
             const response = await fetch('https://symbian.stvffmn.com/nady/public/api/v1/login', {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
                 },
                 body: JSON.stringify({
-                email: email,
-                password: password,
+                    email: email,
+                    password: password,
                 }),
             });
 

@@ -5,50 +5,58 @@ import searchImg from '../../images/Resultats-de-recherche–1.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import NavBar from '../../components/NavBar/NavBar';
+import toast from 'react-hot-toast';
+import apiKey from '../../Api/Api';
+
 
 
 function MovieSearchResultsPage() {
     
     const [searchParams] = useSearchParams();
-    
     const name = searchParams.get('name');
-
     const [inputValue, setInputValue] = useState(name)
-
-    const apiKey = "a7370479d17c1c001f3a2bb1dc10dd53";
-
     const [movieFetchData, setMovieFetchData] = useState([])
 
     const [cart, setCart] = useState([]);
     const [errors, setErrors] = useState({ moviename: "" });
+    const [loading, setLoading] = useState(false);
+
 
 
     const handleChangeInput = (e) => {
         setInputValue(e.target.value)
     }
 
-    useEffect(() => {
-        const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}`;
-        fetch(url).then((response) => response.json()).then((data) => {
-            setMovieFetchData(data.results)
-        })
-    }, [name])
+    // useEffect(() => {
+    //     const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}`;
+    //     fetch(url).then((response) => response.json()).then((data) => {
+    //         setMovieFetchData(data.results)
+    //     })
+    // }, [name])
 
-    const searchMovies = (e) => {
+    const searchMovies = async (e) => {
         e.preventDefault();
+        setLoading(true)
         let newErrors = {};
 
-        if (!inputValue) {
-            newErrors.moviename = "Le nom d'un film est requis.";
-            setErrors(newErrors);
-        } else if (inputValue.length < 3) {
-            newErrors.moviename = "Le nom d'un film doit contenir au moins 3 caractères.";
-            setErrors(newErrors);
-        } else {
-            const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(inputValue)}`;
-            fetch(url).then((response) => response.json()).then((data) => {
+        try {
+
+            if (!inputValue) {
+                newErrors.moviename = "Le nom d'un film est requis.";
+                setErrors(newErrors);
+            } else if (inputValue.length < 3) {
+                newErrors.moviename = "Le nom d'un film doit contenir au moins 3 caractères.";
+                setErrors(newErrors);
+            } else {
+                const responsive  = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(inputValue)}`);
+                const data = await responsive.json()
                 setMovieFetchData(data.results);
-            });
+            }
+        }
+        catch(error) {
+            toast.error('Erreur lors de la connexion. Veuillez réessayer.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -77,9 +85,36 @@ function MovieSearchResultsPage() {
                         />
                         <button 
                             type="submit" 
-                            className='bg-orange-500 text-white px-6 py-3 rounded-sm shadow-md transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none'
+                            className={`bg-orange-500 text-white px-6 py-3 rounded-sm shadow-md transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none ${loading ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
+                            disabled={loading}
                         >
-                            Rechercher
+                            {loading ? (
+                                    <div className="flex items-center">
+                                        <svg
+                                            className="w-6 h-6 text-white animate-spin mr-2"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            ></circle>
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8v8h8a8 8 0 11-16 0z"
+                                            ></path>
+                                        </svg>
+                                        <span>Rechercher...</span>
+                                    </div>
+                                ) : (
+                                    "Rechercher"
+                                )}
                         </button>
                     </form>
                     {errors.moviename && <p className="text-red-500 text-xs italic">{errors.moviename}</p>}

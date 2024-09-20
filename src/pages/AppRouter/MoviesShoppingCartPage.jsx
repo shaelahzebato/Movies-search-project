@@ -11,7 +11,7 @@ function MovieShoppingCartPage() {
 
     const imgBase = "https://image.tmdb.org/t/p/original/";
 
-    const getMoviesForShopCart = () => {
+    const fetchMoviesForShopCart = () => {
         fetch('https://api.themoviedb.org/3/movie/popular?api_key=a7370479d17c1c001f3a2bb1dc10dd53')
         .then(response => response.json())
         .then(data => {
@@ -23,7 +23,7 @@ function MovieShoppingCartPage() {
     }
 
     useEffect(() => {
-        getMoviesForShopCart()
+        fetchMoviesForShopCart()
     })
 
     const incrementQuantity = () => {
