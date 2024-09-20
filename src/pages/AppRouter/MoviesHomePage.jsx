@@ -5,9 +5,10 @@ import NavBar from '../../components/NavBar/NavBar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDoubleDown } from '@fortawesome/free-solid-svg-icons'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom';
 
 function MovieHomePage() {
-
+    const navigate = useNavigate();
     const [movieTitle, setMovieTitle] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
     const [errors, setErrors] = useState({ movieTitle: '' });
@@ -29,7 +30,9 @@ function MovieHomePage() {
             newErrors.movieTitle = "Le nom d'un film doit contenir au moins 3 caractères.";
             setErrors(newErrors);
         } else {
-            window.location.href = `/movies-results?name=${movieTitle}`;
+            navigate(`/movies-results?name=${encodeURIComponent(movieTitle)}`);
+            // navigate(`/movies-results?name=${movieTitle}`);
+            // window.location.href = `/movies-results?name=${movieTitle}`;
         }
     };
   

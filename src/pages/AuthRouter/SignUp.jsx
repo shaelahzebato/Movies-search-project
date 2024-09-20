@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import homepagebg from '../../images/accueil–1.png';
 import logo from '../../images/Logo.png';
 import toast from 'react-hot-toast';
-
+import { useNavigate } from 'react-router-dom';
 //S'inscrire
 function SignUp() {
-    
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
@@ -108,7 +108,7 @@ function SignUp() {
                 localStorage.setItem('token', data.access_token);
                 if (data.success) {
                     toast.success(data.message);
-                    window.location.href = '/';
+                    navigate('/');
                 } else {
                     toast.error(data.message);
                 }

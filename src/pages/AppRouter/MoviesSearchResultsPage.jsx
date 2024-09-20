@@ -27,12 +27,13 @@ function MovieSearchResultsPage() {
         setInputValue(e.target.value)
     }
 
-    // useEffect(() => {
-    //     const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}`;
-    //     fetch(url).then((response) => response.json()).then((data) => {
-    //         setMovieFetchData(data.results)
-    //     })
-    // }, [name])
+    //Le code qui lance la recherche au chargement du composant, depuis la home page.
+    useEffect(() => {
+        const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}`;
+        fetch(url).then((response) => response.json()).then((data) => {
+            setMovieFetchData(data.results)
+        })
+    }, [name])
 
     const searchMovies = async (e) => {
         e.preventDefault();

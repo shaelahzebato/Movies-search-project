@@ -273,8 +273,8 @@ function MovieDetailsPage() {
                                     <h2 className='text-2xl'>Films similaires</h2>
                                     <div className="grid grid-cols-6 gap-4">
                                         {similarMovies.map((simov) => (
-                                            <Link to={`/movie-details?id=${simov.id}`} key={simov.id} className="relative w-full h-64 bg-gray-600">
-                                                <img src={`${imgBase}${simov.backdrop_path}`} alt={`${simov.title} backdrop`} className="w-full h-full object-cover" />
+                                            <Link to={`/movie-details?id=${simov.id}`} key={simov.id} className="relative w-full h-64 rounded-lg bg-gray-600 transition-transform transform hover:scale-105">
+                                                <img src={`${imgBase}${simov.backdrop_path}`} alt={`${simov.title} backdrop`} className="w-full h-full object-cover rounded-md transition-transform duration-300 ease-in-out group-hover:scale-110" />
                                                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                                                     <h1 className="text-white text-center text-xl font-bold">{simov.title}</h1>
                                                 </div>

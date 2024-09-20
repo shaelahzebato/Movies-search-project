@@ -1,10 +1,10 @@
 import React, {  useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import logo from '../../images/Logo.png'
 import moi from '../../images/moii.png'
 
 function NavBar() {
-
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [isReOpen, setIsReOpen] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -48,7 +48,7 @@ function NavBar() {
         e.preventDefault()
         localStorage.removeItem('token');
         setIsAuthenticated(false)
-        window.location.href = '/';
+        navigate('/');
     };
 
     

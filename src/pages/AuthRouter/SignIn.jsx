@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import homepagebg from '../../images/accueil–1.png'
 import logo from '../../images/Logo.png'
@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 //Se connecter
 function SignIn() {
 
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -73,7 +74,7 @@ function SignIn() {
                 // Si la réponse est un succès
                 localStorage.setItem('token', data.access_token);
                 toast.success(data.message || 'Connexion réussie !');
-                window.location.href = '/';
+                navigate('/');
             } else {
                 // Si la réponse est une erreur
                 if (data.message) {
