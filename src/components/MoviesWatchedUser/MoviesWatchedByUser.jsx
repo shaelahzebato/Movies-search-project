@@ -6,9 +6,11 @@ import apiKey from '../../Api/Api';
 
 function MoviesWatchedByUser() {
   
+    const [loading, setLoading] = useState(false);
     const [movieWatchedList, setMovieWatchedList] = useState([])
 
     useEffect( () => {
+        setLoading(true)
         const token = localStorage.getItem('token');
         const fetchMovieWatchedByUser = async () => {
             try {
@@ -45,6 +47,9 @@ function MoviesWatchedByUser() {
             catch(err) {
                 console.log("Erreur", err);                
             }
+            finally {
+                setLoading(false)
+            }
         }
 
 
@@ -54,32 +59,39 @@ function MoviesWatchedByUser() {
 
     return (
         <section>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-white">
-                {movieWatchedList.map((movie, index) => (
-                    <div key={index} className="relative group bg-gray-600 rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105">
-                        <Link to={`/movie-details?id=${movie.id}`}>
-                            <img 
-                                src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path || movie.poster_path}`} 
-                                alt={movie.title} 
-                                className="w-full h-64 object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
-                            />
-                            <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ease-in-out group-hover:opacity-100 opacity-80">
-                                <h1 className="text-white text-lg font-bold Montserrat">{movie.title}</h1>
-                                <div className="flex justify-between items-center mt-2">
-                                    <span className="text-orange-400 text-sm font-semibold">${movie.price || '100'}</span>
-                                    <button 
-                                        
-                                        className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
-                                    >
-                                        <FontAwesomeIcon icon={faPlus}/>
-                                        <span>Panier</span>
-                                    </button>
+            {loading ? (
+                <div className="flex flex-col justify-center items-center gap-2">
+                    <div className="h-8 w-8 rounded-full border-2 border-orange-600 border-dashed animate-spin"></div>
+                    <span>Chargement...</span>
+                </div>
+                ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-white">
+                    {movieWatchedList.map((movie, index) => (
+                        <div key={index} className="relative group bg-gray-600 rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105">
+                            <Link to={`/movie-details?id=${movie.id}`}>
+                                <img 
+                                    src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path || movie.poster_path}`} 
+                                    alt={movie.title} 
+                                    className="w-full h-64 object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ease-in-out group-hover:opacity-100 opacity-80">
+                                    <h1 className="text-white text-lg font-bold Montserrat">{movie.title}</h1>
+                                    <div className="flex justify-between items-center mt-2">
+                                        <span className="text-orange-400 text-sm font-semibold">${movie.price || '100'}</span>
+                                        <button 
+                                            
+                                            className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
+                                        >
+                                            <FontAwesomeIcon icon={faPlus}/>
+                                            <span>Panier</span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    </div>
-                ))}
-            </div>
+                            </Link>
+                        </div>
+                    ))}
+                </div>
+            )}
         </section>
     )
 }
