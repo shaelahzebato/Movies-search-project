@@ -95,7 +95,13 @@ function UserProfilePage() {
             </>
         )
     }
-    
+    else {
+        return (
+            <div className="w-full min-h-screen flex items-center justify-center">
+                <p className='text-lg'>Données indisponible, veuillez vérifier votre connexion...</p>
+            </div>
+        )
+    }    
 }
 
 export default UserProfilePage;
