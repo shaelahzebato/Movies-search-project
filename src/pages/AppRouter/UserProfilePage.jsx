@@ -3,14 +3,16 @@ import NavBar from '../../components/NavBar/NavBar';
 import moi from '../../images/moii.png'
 import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
+import UserFavoris from '../../components/UserFavoris/UserFavoris';
+import MoviesWatchedByUser from '../../components/MoviesWatchedUser/MoviesWatchedByUser';
 
 function UserProfilePage() {
     const [activeTab, setActiveTab] = useState(0);
 
     const tabs = [
         { name: 'Playlist', content: 'Contenus de la table Playlist' },
-        { name: 'Films regardés', content: 'Contenus de la table Films regardés' },
-        { name: 'Favoris', content: 'Contenus de la table Favoris' },
+        { name: 'Films regardés', content: <MoviesWatchedByUser/> },
+        { name: 'Favoris', content: <UserFavoris/>}, //'Contenus de la table Favoris' 
     ];
 
 
@@ -36,7 +38,6 @@ function UserProfilePage() {
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("data =>>> ", data);
                     setUserData(data);
                 } else {
                     const errorData = await response.json();

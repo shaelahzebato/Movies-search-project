@@ -22,7 +22,7 @@ function MovieHomePage() {
         let newErrors = {};
 
         if (!isAuthenticated) {
-            toast.error('Veuillez vous connecter ou créer un compte pour effectuer cette opération !');
+            toast.info('Veuillez vous connecter ou créer un compte pour effectuer cette opération !');
         } else if (!movieTitle) {
             newErrors.movieTitle = "Le nom d'un film est requis.";
             setErrors(newErrors);

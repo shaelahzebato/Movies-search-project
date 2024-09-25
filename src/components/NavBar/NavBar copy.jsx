@@ -63,7 +63,6 @@ function NavBar() {
                         <div className="text-white">
                             <p>Votre filmographie</p>
                             <p>epoustouflant</p>
-                            {/* <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-lg mx-2 text-token-text-secondary"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 8C3 7.44772 3.44772 7 4 7H20C20.5523 7 21 7.44772 21 8C21 8.55228 20.5523 9 20 9H4C3.44772 9 3 8.55228 3 8ZM3 16C3 15.4477 3.44772 15 4 15H14C14.5523 15 15 15.4477 15 16C15 16.5523 14.5523 17 14 17H4C3.44772 17 3 16.5523 3 16Z" fill="currentColor"></path></svg> */}
                         </div>
                     </Link>
                     {/**Petit ecran */}
@@ -234,4 +233,159 @@ function NavBar() {
 }
 
 export default NavBar;
-// https://templates.iqonic.design/streamit-dist/frontend/react/playlist
+
+
+// import React, { useState } from 'react';
+// import { Link } from 'react-router-dom'; // Pour la navigation
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faUser, faShoppingCart, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+// import logo from '../../images/Logo.png'; // Assurez-vous d'importer votre logo
+
+// function Navbar() {
+//     // function Navbar({ isLoggedIn, userName }) {
+//   const [isDropdownOpen, setDropdownOpen] = useState(false);
+//   const [isLoggedIn, setIsLoggedIn] = useState(true);
+//   const [userName, setUserName] = useState("false");
+  
+//   const toggleDropdown = () => {
+//     setDropdownOpen(!isDropdownOpen);
+//   };
+
+//   return (
+//     <nav className="bg-gray-800 text-white p-4">
+//       <div className="container mx-auto flex justify-between items-center">
+//         {/* Logo */}
+//         <div className="flex-shrink-0">
+//           <Link to="/">
+//             <img src={logo} alt="Logo" className="h-10" />
+//           </Link>
+//         </div>
+
+//         {/* Boutons à droite */}
+//         <div className="flex items-center space-x-4">
+//           {!isLoggedIn ? (
+//             <>
+//               {/* Boutons Connexion et Inscription */}
+//               <Link to="/login" className="hover:bg-gray-700 px-3 py-2 rounded-md transition">
+//                 Connexion
+//               </Link>
+//               <Link to="/signup" className="hover:bg-gray-700 px-3 py-2 rounded-md transition">
+//                 Inscription
+//               </Link>
+//             </>
+//           ) : (
+//             <>
+//               {/* Bouton Panier */}
+//               <Link to="/cart" className="hover:bg-gray-700 px-3 py-2 rounded-md transition relative">
+//                 <FontAwesomeIcon icon={faShoppingCart} />
+//               </Link>
+
+//               {/* Bouton Utilisateur avec Dropdown */}
+//               <div className="relative">
+//                 <button
+//                   onClick={toggleDropdown}
+//                   className="hover:bg-gray-700 px-3 py-2 rounded-md transition focus:outline-none"
+//                 >
+//                   <FontAwesomeIcon icon={faUser} />
+//                 </button>
+
+//                 {isDropdownOpen && (
+//                   <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-10">
+//                     <div className="py-2 px-4">
+//                       <span>Bonjour, {userName}</span>
+//                     </div>
+//                     <Link
+//                       to="/profile"
+//                       className="block px-4 py-2 hover:bg-gray-200 transition"
+//                     >
+//                       Mon profil
+//                     </Link>
+//                     <button className="block w-full text-left px-4 py-2 hover:bg-gray-200 transition">
+//                       <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+//                       Déconnexion
+//                     </button>
+//                   </div>
+//                 )}
+//               </div>
+//             </>
+//           )}
+//         </div>
+//       </div>
+//     </nav>
+//   );
+// }
+
+// export default Navbar;
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import { Link } from 'react-router-dom';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faUser, faShoppingCart, faSignInAlt, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+
+// const NavBar = () => {
+//   const [isScrolled, setIsScrolled] = useState(false);
+//   const [isLoggedIn, setIsLoggedIn] = useState(false); // Simulation de l'état de connexion
+//   const userName = 'John Doe'; // Nom d'utilisateur simulé
+
+//   // Gérer l'animation de la navbar lors du scroll
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       setIsScrolled(window.scrollY > 50);
+//     };
+//     window.addEventListener('scroll', handleScroll);
+//     return () => window.removeEventListener('scroll', handleScroll);
+//   }, []);
+
+//   return (
+//     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-[#1b1b1b] shadow-lg' : 'bg-transparent'} text-white`}>
+//       <div className="container mx-auto flex justify-between items-center py-4 px-6">
+//         {/* Logo */}
+//         <div className="text-2xl font-bold">
+//           <Link to="/"> 
+//             <img src="/logo.png" alt="Logo" className="w-24" />
+//           </Link>
+//         </div>
+
+//         {/* Boutons de droite */}
+//         <div className="flex items-center gap-4">
+//           {!isLoggedIn ? (
+//             <>
+//               {/* Boutons Connexion et Inscription */}
+//               <Link to="/login" className="px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-500 transition-all duration-200">
+//                 <FontAwesomeIcon icon={faSignInAlt} /> Connexion
+//               </Link>
+//               <Link to="/register" className="px-4 py-2 bg-green-600 rounded-md hover:bg-green-500 transition-all duration-200">
+//                 <FontAwesomeIcon icon={faUserPlus} /> Inscription
+//               </Link>
+//             </>
+//           ) : (
+//             <>
+//               {/* Bouton Panier */}
+//               <Link to="/cart" className="relative px-4 py-2">
+//                 <FontAwesomeIcon icon={faShoppingCart} />
+//                 <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">3</span>
+//               </Link>
+
+//               {/* Menu Utilisateur */}
+//               <div className="relative group">
+//                 <button className="px-4 py-2 bg-gray-700 rounded-md hover:bg-gray-600 transition-all duration-200">
+//                   <FontAwesomeIcon icon={faUser} /> {userName}
+//                 </button>
+
+//                 {/* Dropdown */}
+//                 <div className="absolute right-0 mt-2 bg-white text-black rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+//                   <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">Profil</Link>
+//                   <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">Déconnexion</button>
+//                 </div>
+//               </div>
+//             </>
+//           )}
+//         </div>
+//       </div>
+//     </nav>
+//   );
+// };
+
+// export default NavBar;

@@ -5,13 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+import toast from 'react-hot-toast';
 import apiKey from '../../Api/Api'
 import imgBase from '../../Api/imgBase';
 import NavBar from '../../components/NavBar/NavBar'
-import toast from 'react-hot-toast';
 import Footer from '../../components/Footer/Footer';
 
-//Chargement film similaire !!!
 
 function MovieDetailsPage() {
 
@@ -21,6 +20,7 @@ function MovieDetailsPage() {
     const [similarMovies, setSimilarMovies] = useState([]);
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [favoris, setFavoris] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -56,7 +56,6 @@ function MovieDetailsPage() {
             try {
                 const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`);
                 const data = await response.json();
-                console.log("Détails d'un film ::: ", data);
                 
                 setMovieDetails(data);
             } catch (error) {
@@ -106,6 +105,109 @@ function MovieDetailsPage() {
         }
     };
 
+    
+    const addToFavoris = async (movieId) => {
+        const token = localStorage.getItem('token');
+
+        try {
+            // Récupérer la liste des films favoris actuels de l'utilisateur
+            const fetchFavoritesResponse = await fetch('https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!fetchFavoritesResponse.ok) {
+                console.log('Erreur lors de la récupération des favoris');
+            }
+
+            // Récupérer les favoris sous forme de tableau, ou avoir un tableau vide en cas d'échec
+            const responseData = await fetchFavoritesResponse.json();
+            const favoriteMovies = Array.isArray(responseData) ? responseData : responseData.data?.movies || []; // Si le format est un objet contenant 'movies'
+
+            //Afficher le contenu des favoris
+            console.log("favoriteMovies :", favoriteMovies);
+
+            // Vérifier si le film est déjà dans les favoris
+            const isMovieAlreadyFavorite = favoriteMovies.find(favorite => favorite.id === movieId);
+
+            if (isMovieAlreadyFavorite) {
+                console.log("Le film est déjà dans les favoris.");
+                toast.info("Le film est déjà dans vos favoris.");
+                return; // Sortir de la fonction si le film est déjà un favori
+            }
+
+            // Ajouter le film aux favoris s'il n'y est pas déjà
+            console.log("Ajout aux favoris pour le film ID :", movieId);
+
+            const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    movie: {
+                        id: movieId
+                    }
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Film ajouté aux favoris :", data);
+                toast.success(data.message);
+            } else {
+                console.error("Erreur lors de l'ajout aux favoris", response.status);
+                toast.error("Erreur lors de l'ajout aux favoris.");
+            }
+        } catch (error) {
+            console.error('Erreur lors de la requête', error);
+            toast.error("Une erreur s'est produite.");
+        }
+    };
+
+
+    
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const fetchIsMovieIsFav = async () => {
+            try {
+                const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                    },
+                })
+                if(response.ok) {
+                    setFavoris(true)
+                    const data = await response.json()
+                    console.log('response : ', data);
+                }
+                else if (response.status === 404) {
+                    console.log(`Le film ${movieId} n'est pas en favori`);
+                    setFavoris(false)
+                } else {
+                    console.log(`Erreur lors de la vérification du favori : ${response.status}`);
+                    setFavoris(false)
+    
+                }
+            }
+            catch(err) {
+                console.err(err)
+            }
+        }
+
+        fetchIsMovieIsFav()
+    }, [movieId])
+    
+
+    
     return (
         <>
             {/* Petit ecran */}
@@ -180,13 +282,41 @@ function MovieDetailsPage() {
 
                                 {/* Boutons d'actions */}
                                 <ul className="flex gap-4 justify-center mt-6">
-                                    {actionIcons.map((icon, index) => (
-                                        <li key={index} className="text-2xl rounded-full p-2 bg-black/50 hover:bg-white/90 duration-500 ease-out border border-gray-700 font-semibold text-orange-500 cursor-pointer">
+                                    <li>
+                                        <button onClick={() => addToFavoris(movieDetails.id)}>
+                                            {
+                                            favoris ? 
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                                    <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                                                </svg>
+                                                :
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                                                </svg>
+                                            }
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                                            </svg>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                            </svg>
+                                        </button>
+                                    </li>
+                                    {/* {actionIcons.map((icon, index) => (
+                                        <li onClick={() => addToFavoris(movieDetails.id)} key={index} className={`text-2xl rounded-full p-2 bg-black/50 hover:bg-white/90 duration-500 ease-out border border-gray-700 font-semibold text-orange-500 cursor-pointer`}>
                                             {icon}
                                         </li>
-                                    ))}
+                                    ))} */}
                                 </ul>
-                                
+
                                 {/* Films similaires */}
                                 {
                                     similarMovies.length > 0 ? 
@@ -306,11 +436,41 @@ function MovieDetailsPage() {
                                         </div>
                                         <p className='text-xl -mt-4'>{movieDetails?.overview}</p>
                                         <ul className="flex gap-4">
-                                            {actionIcons.map((icon, index) => (
-                                                <li key={index} className="text-2xl rounded-full p-2 bg-black/50 hover:bg-white/90 duration-500 ease-out border border-gray-700 font-semibold text-orange-500 cursor-pointer">
+                                            <li>
+                                                <button onClick={() => addToFavoris(movieDetails.id)}>
+                                                    {
+                                                    favoris ? 
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                                            <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                                                        </svg>
+                                                        :
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                                                        </svg>
+                                                    }
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                                                    </svg>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                                    </svg>
+                                                </button>
+                                            </li>
+                                            {/* {actionIcons.map((icon, index) => (
+                                                <li key={index} onClick={() => addToFavoris(movieDetails.id)} className="text-2xl rounded-full p-2 bg-black/50 hover:bg-white/90 duration-500 ease-out border border-gray-700 font-semibold text-orange-500 cursor-pointer">
                                                     {icon}
                                                 </li>
-                                            ))}
+                                            ))} */}
+
+
                                             {/* {
                                             [
                                                 {
@@ -358,7 +518,7 @@ function MovieDetailsPage() {
                                 </div>
                                 {
                                     similarMovies.length > 0 ?
-                                <div className="flex flex-col gap-4">
+                                    <div className="flex flex-col gap-4">
                                     <h2 className='text-2xl'>Films similaires</h2>
                                     {loading ? (
                                         <div className="flex flex-col justify-center items-center gap-2">

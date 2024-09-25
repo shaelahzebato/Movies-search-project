@@ -70,7 +70,70 @@ function MovieSearchResultsPage() {
             toast.success(`${movie.title} a été ajouté au panier`);
         }
     };
+    
 
+    const addToWatchedList = async (movieId) => {
+        const token = localStorage.getItem('token');
+    
+        try {
+            // 1 : Récupérer la liste des films déjà regardés
+            const fetchWatchedResponse = await fetch('https:/symbian.stvffmn.com/nady/public/api/v1/users/watched-movies', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (!fetchWatchedResponse.ok) {
+                console.error('Erreur lors de la récupération des films regardés');
+            }
+    
+            const watchedMovies = await fetchWatchedResponse.json();
+            const watchedList = Array.isArray(watchedMovies) ? watchedMovies : watchedMovies.data?.movies || []; // Si la liste est contenue dans une autre propriété
+    
+            console.log("Liste des films déjà regardés :", watchedList);
+    
+            // 2 : Vérifier si le film est déjà dans la liste des films regardés
+            const isMovieAlreadyWatched = watchedList.find(movie => movie.id === movieId);
+    
+            if (isMovieAlreadyWatched) {
+                console.log("Le film est déjà dans la liste des films regardés.");
+                toast.info("Le film est déjà dans votre liste de films regardés.");
+                return; // Sortir de la fonction si le film est déjà regardé
+            }
+    
+            // 3 : Ajouter le film à la liste des films regardés s'il n'y est pas déjà
+            const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/watched-movies`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    movie: {
+                        id: movieId
+                    }
+                })
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Film ajouté à la liste des films regardés :", data);
+                toast.success(data.message);
+            } else {
+                console.error("Erreur lors de l'ajout du film à la liste des films regardés", response.status);
+                toast.error("Erreur lors de l'ajout du film à la liste des films regardés.");
+            }
+    
+        } catch (error) {
+            console.error('Erreur lors de la requête', error);
+            toast.error("Une erreur s'est produite lors de l'ajout à la liste des films regardés.");
+        }
+    };
+    
 
     return (
         <>
@@ -108,7 +171,7 @@ function MovieSearchResultsPage() {
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-white">
                             {movieFetchData.map((movie, index) => (
                                 <div key={index} className="relative group bg-gray-600 rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105">
-                                    <Link to={`/movie-details?id=${movie.id}`}>
+                                    <Link onClick={() => addToWatchedList(movie.id)} to={`/movie-details?id=${movie.id}`}>
                                         <img 
                                             src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path || movie.poster_path}`} 
                                             alt={movie.title} 
