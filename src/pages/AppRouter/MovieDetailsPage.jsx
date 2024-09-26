@@ -105,7 +105,82 @@ function MovieDetailsPage() {
         }
     };
 
+    
+    const addToFavoris = async (movieId) => {
+        const token = localStorage.getItem('token');
 
+        try {
+            // Récupérer la liste des films favoris actuels de l'utilisateur
+            const fetchFavoritesResponse = await fetch('https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!fetchFavoritesResponse.ok) {
+                console.log('Erreur lors de la récupération des favoris');
+            }
+
+            // Récupérer les favoris sous forme de tableau, ou avoir un tableau vide en cas d'échec
+            const responseData = await fetchFavoritesResponse.json();
+            const favoriteMovies = Array.isArray(responseData) ? responseData : responseData.data?.movies || []; // Si le format est un objet contenant 'movies'
+
+            //Afficher le contenu des favoris
+            console.log("favoriteMovies :", favoriteMovies);
+
+            // Vérifier si le film est déjà dans les favoris
+            const isMovieAlreadyFavorite = favoriteMovies.find(favorite => favorite.id === movieId);
+
+            if (isMovieAlreadyFavorite) {
+                console.log("Le film est déjà dans les favoris.");
+                toast.info("Le film est déjà dans vos favoris.");
+                const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/favorite-movies/${movieId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                    },
+                })
+                if(response.ok) {
+                    const data = await response.json()
+                    console.log("dataaaaaaaaa : ", data);
+                }
+                // return; // Sortir de la fonction si le film est déjà un favori
+            }
+
+            // Ajouter le film aux favoris s'il n'y est pas déjà
+            console.log("Ajout aux favoris pour le film ID :", movieId);
+
+            const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    movie: {
+                        id: movieId
+                    }
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Film ajouté aux favoris :", data);
+                toast.success(data.message);
+            } else {
+                console.error("Erreur lors de l'ajout aux favoris", response.status);
+                toast.error("Erreur lors de l'ajout aux favoris.");
+            }
+        } catch (error) {
+            console.error('Erreur lors de la requête', error);
+            toast.error("Une erreur s'est produite.");
+        }
+    };
 
 
     
