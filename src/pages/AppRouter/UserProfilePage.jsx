@@ -5,12 +5,13 @@ import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import UserFavoris from '../../components/UserFavoris/UserFavoris';
 import MoviesWatchedByUser from '../../components/MoviesWatchedUser/MoviesWatchedByUser';
+import Playlist from '../../components/Playlist/Playlist';
 
 function UserProfilePage() {
     const [activeTab, setActiveTab] = useState(0);
 
     const tabs = [
-        { name: 'Playlist', content: 'Contenus de la table Playlist' },
+        { name: 'Playlist', content: <Playlist/> }, //'Contenus de la table Playlist'
         { name: 'Films regardés', content: <MoviesWatchedByUser/> }, //'Contenus de la table Films regardés' 
         { name: 'Favoris', content: <UserFavoris/>}, //'Contenus de la table Favoris' 
     ];
