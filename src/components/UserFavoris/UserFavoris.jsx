@@ -58,12 +58,12 @@ function UserFavoris() {
 
     return (
         <section>
-            {loading ? (
+            {/* {loading ? (
                 <div className="flex flex-col justify-center items-center gap-2">
                     <div className="h-8 w-8 rounded-full border-2 border-orange-600 border-dashed animate-spin"></div>
                     <span>Chargement...</span>
                 </div>
-                ) : (
+                ) : ( */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-white">
                     {favorisList.map((movie, index) => (
                         <div key={index} className="relative group bg-gray-600 rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105">
@@ -90,7 +90,7 @@ function UserFavoris() {
                         </div>
                     ))}
                 </div>
-            )}
+            {/* )} */}
         </section>
     )
 }
