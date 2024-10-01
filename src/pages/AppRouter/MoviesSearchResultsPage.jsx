@@ -30,19 +30,25 @@ function MovieSearchResultsPage() {
 
     //Le code qui lance la recherche au chargement du composant, depuis la home page.
     useEffect(() => {
-        const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}`;
-        fetch(url).then((response) => response.json()).then((data) => {
-            setMovieFetchData(data.results)
-        })
-    }, [name])
+        if (name) {  // Vérifie que 'name' est bien défini
+            const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}`;
+            fetch(url).then((response) => response.json()).then((data) => {
+                setMovieFetchData(data.results);
+            }).catch(error => {
+                console.error('Erreur lors de la récupération des films:', error);
+                toast.error('Erreur lors de la récupération des films.');
+            });
+        }
+    }, [name]);
+    
 
+    //Le code qui lance la recherche depuis cette page(resultpage) en foction de ce que l'utilisateur saisit.
     const searchMovies = async (e) => {
         e.preventDefault();
-        setLoading(true)
+        setLoading(true);
         let newErrors = {};
-
+    
         try {
-
             if (!inputValue) {
                 newErrors.moviename = "Le nom d'un film est requis.";
                 setErrors(newErrors);
@@ -50,17 +56,23 @@ function MovieSearchResultsPage() {
                 newErrors.moviename = "Le nom d'un film doit contenir au moins 3 caractères.";
                 setErrors(newErrors);
             } else {
-                const responsive  = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(inputValue)}`);
-                const data = await responsive.json()
-                setMovieFetchData(data.results);
+                const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(inputValue)}`);
+                const data = await response.json();
+                if (data.results) {
+                    setMovieFetchData(data.results);
+                } else {
+                    toast.error("Aucun résultat trouvé.");
+                }
             }
-        }
-        catch(error) {
-            toast.error('Erreur lors de la connexion. Veuillez réessayer.');
+        } catch (error) {
+            console.error('Erreur lors de la recherche:', error);
+            toast.error('Erreur lors de la recherche.');
         } finally {
             setLoading(false);
         }
     };
+    
+
 
     const addToCart = (movieId) => {
         // Trouvez le film correspondant avec movieId

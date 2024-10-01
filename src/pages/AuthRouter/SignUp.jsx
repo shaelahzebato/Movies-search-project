@@ -103,25 +103,30 @@ function SignUp() {
 
             const data = await response.json();
             console.log("Les données de l'utilisateur inscrit ::", data);
-
-            if (data.access_token !== undefined) {
-                localStorage.setItem('token', data.access_token);
-                if (data.success) {
-                    toast.success(data.message);
-                    navigate('/');
+            if (response.ok) {
+                // Si la réponse est un succès
+                if (data.access_token !== undefined) {
+                    localStorage.setItem('token', data.access_token);
+                    if (data.success) {
+                        toast.success(data.message);
+                        navigate('/');
+                    } else {
+                        toast.error(data.message);
+                    }
                 } else {
-                    toast.error(data.message);
+                    let newErrors = {};
+                    if (data.data) {
+                        Object.keys(data.data).forEach((key) => {
+                            newErrors[key] = data.data[key].join(',');
+                        });
+                    }
+                    setErrors(newErrors);
+                    toast.error(data.message || 'Compte inexistant !');
                 }
             } else {
-                let newErrors = {};
-                if (data.data) {
-                    Object.keys(data.data).forEach((key) => {
-                        newErrors[key] = data.data[key].join(',');
-                    });
-                }
-                setErrors(newErrors);
-                toast.error(data.message || 'Compte inexistant !');
+                toast.error(data.message);
             }
+            
         } catch (error) {
             toast.error('Erreur lors de la connexion. Veuillez réessayer.');
         } finally {

@@ -21,17 +21,7 @@ function MovieDetailsPage() {
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(false);
     const [favoris, setFavoris] = useState(false);
-
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    // Récupère tous les paramètres actuels de l'URL
-    const currentSearchParams = location.search;
-
-    // Fonction pour revenir en arrière en gardant les paramètres
-    const handleBackClick = () => {
-        navigate(-1, { state: { from: location.pathname + currentSearchParams } });
-    };
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const actionIcons = [
         (
@@ -51,6 +41,18 @@ function MovieDetailsPage() {
         ),
     ];
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Récupère tous les paramètres actuels de l'URL
+    const currentSearchParams = location.search;
+
+    // Fonction pour revenir en arrière en gardant les paramètres
+    const handleBackClick = () => {
+        navigate(-1, { state: { from: location.pathname + currentSearchParams } });
+    };
+
+    //Fonction pour afficher les détails par defaut des films sur lesquels l'user clique !
     useEffect(() => {
         const fetchMovieDetails = async () => {
             try {
@@ -65,6 +67,7 @@ function MovieDetailsPage() {
         fetchMovieDetails();
     }, [movieId]);
 
+    //Fonction pour afficher les films similaires aux films sur lesquels l'user clique !
     useEffect(() => {
         const fetchSimilarMovies = async () => {
             setLoading(true)
@@ -82,9 +85,109 @@ function MovieDetailsPage() {
         fetchSimilarMovies();
     }, [movieId]);
 
+    //Ce code vérifi si un film est bien en favori ou non, et fait un affichage de coeur en fonction
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const fetchIfMovieIsFav = async () => {
+            try {
+                const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                    },
+                })
+                if(response.ok) {
+                    setFavoris(true)
+                    const data = await response.json()
+                    console.log('response : ', data);
+                }
+                else if (response.status === 404) {
+                    console.log(`Le film ${movieId} n'est pas en favori`);
+                } else {
+                    console.log(`Erreur lors de la vérification du favori : ${response.status}`);
+                }
+            }
+            catch(err) {
+                console.error(err)
+            }
+        }
+        fetchIfMovieIsFav()
+    }, [movieId])
     
-    const [currentIndex, setCurrentIndex] = useState(0);
 
+    //Ce code ajoute et retire en favoris en fonction de l'etat.
+    const toggleFavoris = async (movieId) => {
+        const token = localStorage.getItem('token');
+    
+        try {
+            // Vérification si le film est déjà en favoris
+            const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                },
+            });
+    
+            if (checkResponse.ok) {
+                // Si le film est déjà en favoris, on le retire
+                const removeResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                    },
+                });
+    
+                if (removeResponse.ok) {
+                    console.log(`Le film avec l'ID ${movieId} a été retiré des favoris`);
+                    toast.success("Le film a été retiré de vos favoris");
+                    setFavoris(false);
+                } else {
+                    console.log(`Erreur lors du retrait des favoris : ${removeResponse.status}`);
+                }
+    
+            } else if (checkResponse.status === 404) {
+                // Si le film n'est pas en favoris, on l'ajoute
+                const addResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        movie: {
+                            id: movieId
+                        }
+                    })
+                });
+    
+                if (addResponse.ok) {
+                    const data = await addResponse.json();
+                    console.log(`Film ajouté aux favoris :`, data);
+                    toast.success("Le film a été ajouté à vos favoris");
+                    setFavoris(true);
+                } else {
+                    console.log(`Erreur lors de l'ajout aux favoris : ${addResponse.status}`);
+                }
+            }
+        } catch (error) {
+            console.error('Erreur lors de la requête', error);
+        }
+    };
+    
+    //Fonction d'ajout au panier
+    const addToCart = (movieId) => {
+        // Trouvez le film correspondant avec movieId
+        if (movieDetails?.id === movieId) {
+            setCart([...cart, movieDetails]);
+            toast.success(`${movieDetails.title} a été ajouté au panier`);
+        }
+    };
+
+    
     const prevSlide = () => {
         const isFirstSlide = currentIndex === 0;
         const newIndex = isFirstSlide ? similarMovies.length - 1 : currentIndex - 1;
@@ -96,16 +199,8 @@ function MovieDetailsPage() {
         const newIndex = isLastSlide ? 0 : currentIndex + 1;
         setCurrentIndex(newIndex);
     };
-
-    const addToCart = (movieId) => {
-        // Trouvez le film correspondant avec movieId
-        if (movieDetails?.id === movieId) {
-            setCart([...cart, movieDetails]);
-            toast.success(`${movieDetails.title} a été ajouté au panier`);
-        }
-    };
-
     
+    //Fonction non utilisée
     const addToFavoris = async (movieId) => {
         const token = localStorage.getItem('token');
 
@@ -182,101 +277,6 @@ function MovieDetailsPage() {
         }
     };
 
-
-    
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        const fetchIsMovieIsFav = async () => {
-            try {
-                const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
-                    },
-                })
-                if(response.ok) {
-                    setFavoris(true)
-                    const data = await response.json()
-                    console.log('response : ', data);
-                }
-                else if (response.status === 404) {
-                    console.log(`Le film ${movieId} n'est pas en favori`);
-                    // setFavoris(false)
-                } else {
-                    console.log(`Erreur lors de la vérification du favori : ${response.status}`);
-                    // setFavoris(false)    
-                }
-            }
-            catch(err) {
-                console.error(err)
-            }
-        }
-        fetchIsMovieIsFav()
-    }, [movieId])
-    
-
-    const toggleFavoris = async (movieId) => {
-        const token = localStorage.getItem('token');
-    
-        try {
-            // Vérification si le film est déjà en favoris
-            const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                },
-            });
-    
-            if (checkResponse.ok) {
-                // Si le film est déjà en favoris, on le retire
-                const removeResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
-                    },
-                });
-    
-                if (removeResponse.ok) {
-                    console.log(`Le film avec l'ID ${movieId} a été retiré des favoris`);
-                    toast.success("Le film a été retiré de vos favoris");
-                    setFavoris(false);
-                } else {
-                    console.log(`Erreur lors du retrait des favoris : ${removeResponse.status}`);
-                }
-    
-            } else if (checkResponse.status === 404) {
-                // Si le film n'est pas en favoris, on l'ajoute
-                const addResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        movie: {
-                            id: movieId
-                        }
-                    })
-                });
-    
-                if (addResponse.ok) {
-                    const data = await addResponse.json();
-                    console.log(`Film ajouté aux favoris :`, data);
-                    toast.success("Le film a été ajouté à vos favoris");
-                    setFavoris(true);
-                } else {
-                    console.log(`Erreur lors de l'ajout aux favoris : ${addResponse.status}`);
-                }
-            }
-        } catch (error) {
-            console.error('Erreur lors de la requête', error);
-        }
-    };
-    
 
     
     return (

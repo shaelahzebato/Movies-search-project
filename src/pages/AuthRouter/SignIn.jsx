@@ -78,7 +78,8 @@ function SignIn() {
             } else {
                 // Si la réponse est une erreur
                 if (data.message) {
-                    toast.error(data.message);
+                    // toast.error(data.message);
+                    toast.error("Erreur lors de la connexion, vérifiez votre email ou mot de passe !");
                 }
 
                 let newErrors = {};
@@ -116,42 +117,21 @@ function SignIn() {
                         </Link>
                         <form onSubmit={login} className="w-full flex flex-col gap-6">
                             <div className="mb-4">
-                                <label className="block text-white text-lg font-medium mb-2" htmlFor="email">
-                                Email
-                                </label>
-                                <input
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                type="email"
-                                id="email"
-                                className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.email ? "border border-red-500 focus:ring-0" : ""}`}
-                                placeholder="Entrez votre email"
-                                />
+                                <label className="block text-white text-lg font-medium mb-2" htmlFor="email"> Email </label>
+                                <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" id="email" className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.email ? "border border-red-500 focus:ring-0" : ""}`} placeholder="Entrez votre email" />
                                 {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
                             </div>
                             <div className="mb-6">
-                                <label className="block text-white text-lg font-medium mb-2" htmlFor="password">
-                                Mot de passe
-                                </label>
-                                <input
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.password ? "border border-red-500 focus:ring-0" : ""}`}
-                                placeholder="Entrez votre password"
-                                />
+                                <label className="block text-white text-lg font-medium mb-2" htmlFor="password"> Mot de passe </label>
+                                <input value={password} onChange={(e) => setPassword(e.target.value)} type={showPassword ? "text" : "password"} id="password" className={`w-full px-4 py-4 bg-[#141314] rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400 ${errors.password ? "border border-red-500 focus:ring-0" : ""}`} placeholder="Entrez votre password" />
+                                
                                 {errors.password && <p className="text-red-500 text-xs italic">{errors.password}</p>}
+                                
                                 <div className="mt-2">
-                                <label className="text-gray-600 text-sm">
-                                    <input
-                                    type="checkbox"
-                                    className="mr-2 leading-tight"
-                                    checked={showPassword}
-                                    onChange={() => setShowPassword(!showPassword)}
-                                    />
-                                    Afficher le mot de passe
-                                </label>
+                                    <label className="text-gray-600 text-sm">
+                                        <input type="checkbox" className="mr-2 leading-tight" checked={showPassword} onChange={() => setShowPassword(!showPassword)} />
+                                        Afficher le mot de passe
+                                    </label>
                                 </div>
                             </div>
                             <button
@@ -206,7 +186,6 @@ function SignIn() {
                 </div>
             </div>
         </div>
-
     )
 }
 

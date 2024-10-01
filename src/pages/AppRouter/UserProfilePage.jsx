@@ -11,7 +11,7 @@ function UserProfilePage() {
 
     const tabs = [
         { name: 'Playlist', content: 'Contenus de la table Playlist' },
-        { name: 'Films regardés', content: <MoviesWatchedByUser/> },
+        { name: 'Films regardés', content: <MoviesWatchedByUser/> }, //'Contenus de la table Films regardés' 
         { name: 'Favoris', content: <UserFavoris/>}, //'Contenus de la table Favoris' 
     ];
 
@@ -19,10 +19,11 @@ function UserProfilePage() {
     const [userData, setUserData] = useState('');
     const [error, setError] = useState("");
 
+
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem('token');
-            if (!token) {
+            if (!token || token === undefined) {
                 setError('Token non trouvé !');
                 return;
             }
@@ -97,9 +98,16 @@ function UserProfilePage() {
     }
     else {
         return (
-            <div className="w-full min-h-screen flex items-center justify-center">
-                <p className='text-lg'>Données indisponible, veuillez vérifier votre connexion...</p>
-            </div>
+            <>
+                <div className="w-full min-h-screen flex items-center justify-center">
+                    <div className="flex flex-col justify-center items-center gap-2">
+                        <div className="h-8 w-8 rounded-full border-2 border-orange-600 border-dashed animate-spin"></div>
+                        <span>Chargement...</span>
+                    </div>
+                    {/* <p className='text-lg'>Données indisponible, veuillez vérifier votre connexion...</p> */}
+                </div>
+                <Footer/>
+            </>
         )
     }    
 }
