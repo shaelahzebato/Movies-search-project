@@ -18,10 +18,8 @@ function MovieSearchResultsPage() {
     const [inputValue, setInputValue] = useState(name)
     const [movieFetchData, setMovieFetchData] = useState([])
 
-    const [cart, setCart] = useState([]);
     const [errors, setErrors] = useState({ moviename: "" });
     const [loading, setLoading] = useState(false);
-
 
 
     const handleChangeInput = (e) => {
@@ -69,17 +67,6 @@ function MovieSearchResultsPage() {
             toast.error('Erreur lors de la recherche.');
         } finally {
             setLoading(false);
-        }
-    };
-    
-
-
-    const addToCart = (movieId) => {
-        // Trouvez le film correspondant avec movieId
-        const movie = movieFetchData.find(movie => movie.id === movieId);
-        if (movie) {
-            setCart([...cart, movie]);
-            toast.success(`${movie.title} a été ajouté au panier`);
         }
     };
     
@@ -142,9 +129,105 @@ function MovieSearchResultsPage() {
     
         } catch (error) {
             console.error('Erreur lors de la requête', error);
-            toast.error("Une erreur s'est produite lors de l'ajout à la liste des films regardés.");
+            toast.error("Une erreur s'est produite lors de l'ajout à la liste des films regardés."); //L'erreur ici
         }
     };
+    
+
+    // Fonction pour vérifier si le film existe déjà dans le panier
+    const existingCartItem = async (movieId) => {
+        const token = localStorage.getItem('token');
+
+        const checkResponse = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        })
+
+        const responseMovieInCart = await checkResponse.json();
+        const cartItems = responseMovieInCart.datas;
+        return cartItems.find(item => item.id === movieId);
+    };
+
+    // Fonction d'ajout au panier
+    const addToCart = async (movieId) => {
+        const token = localStorage.getItem('token');
+
+        const existingItem = await existingCartItem(movieId);
+        if (existingItem) {
+            console.log("existingItem ::: ", existingItem);
+            
+            // Si le film existe déjà, on modifie la quantité
+            updateCartItemQuantity(movieId, existingItem.quantity + 1);
+        } 
+        else {
+            try {
+                setLoading(true);
+                const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        product: {
+                            id: movieId 
+                        },
+                        quantity: 1    
+                    }),
+                });
+                const data = await response.json();
+                    
+                if (response.ok) {
+                    toast.success(data.message)
+                    console.log("dataaaaa : ", data);
+                    
+                } else {
+                    console.error("Erreur lors de l'ajout au panier:", data.message);
+                }
+            } catch (error) {
+                console.error("Error adding item to cart:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
+    // Modifier la quantité d'un elemebt dans le panier.
+    const updateCartItemQuantity = async (movieId, newQuantity) => {
+        const token = localStorage.getItem('token');
+
+        try {
+            setLoading(true);
+            const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart/${movieId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    quantity: newQuantity,
+                }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log("updateCartQuantity : ", data);
+            } else {
+                console.error('Erreur lors de la mise à jour de la quantité:', data.message);
+            }
+        } 
+        catch (error) {
+            console.error("Error updating item quantity:", error);
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+
     
 
     return (
@@ -192,9 +275,9 @@ function MovieSearchResultsPage() {
                                         <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ease-in-out group-hover:opacity-100 opacity-80">
                                             <h1 className="text-white text-lg font-bold Montserrat">{movie.title}</h1>
                                             <div className="flex justify-between items-center mt-2">
-                                                <span className="text-orange-400 text-sm font-semibold">${movie.price || '100'}</span>
-                                                <button 
-                                                    onClick={() => addToCart(movie.id)} 
+                                                <span className="text-orange-400 text-sm font-semibold">${movie.budget || '100'}</span>
+                                                <button  // Empêche la propagation de l'événement de clic;
+                                                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); addToCart(movie.id); }} 
                                                     className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
                                                 >
                                                     <FontAwesomeIcon icon={faPlus}/>

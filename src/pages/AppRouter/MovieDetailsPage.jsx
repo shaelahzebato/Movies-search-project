@@ -18,28 +18,10 @@ function MovieDetailsPage() {
     const movieId = searchParams.get('id');
     const [movieDetails, setMovieDetails] = useState();
     const [similarMovies, setSimilarMovies] = useState([]);
-    const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(false);
     const [favoris, setFavoris] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-
-    const actionIcons = [
-        (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-          </svg>
-        ),
-        (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-          </svg>
-        ),
-        (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-          </svg>
-        ),
-    ];
+    const [quantity, setQuantity] = useState(1);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -121,7 +103,7 @@ function MovieDetailsPage() {
         const token = localStorage.getItem('token');
     
         try {
-            // Vérification si le film est déjà en favoris
+            // Vérification si le film est déjà en favoris /api/v1/users/favorites-movies
             const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
                 method: 'GET',
                 headers: {
@@ -178,105 +160,107 @@ function MovieDetailsPage() {
         }
     };
     
-    //Fonction d'ajout au panier
-    const addToCart = (movieId) => {
-        // Trouvez le film correspondant avec movieId
-        if (movieDetails?.id === movieId) {
-            setCart([...cart, movieDetails]);
-            toast.success(`${movieDetails.title} a été ajouté au panier`);
+        
+    // Fonction pour ajouter au panier
+    const addToCart = async (productId, quantity = 1) => {
+        const token = localStorage.getItem('token');
+
+        const checkResponse = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+        })
+
+        const responseMovieInCart = await checkResponse.json();
+        const cartItems = responseMovieInCart.datas;
+
+        // Vérification si le produit est déjà dans le panier
+        const existingCartItem = cartItems.find((item) => item.product_id === productId);
+        console.log("existingCartItem :: ", existingCartItem);
+        
+
+        if (existingCartItem) {
+            // Si le produit existe déjà, mettre à jour la quantité
+            await updateCartQuantity(existingCartItem.id, existingCartItem.quantity + quantity);
+        }
+        else {
+            try {
+                const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product: {
+                            id: productId 
+                        },
+                        quantity: quantity
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    console.log("dataaaaa : ", data);
+                    
+                } else {
+                    console.error("Erreur lors de l'ajout au panier:", data.message);
+                }
+            }
+            catch (error) {
+                console.error('Erreur réseau:', error);
+            }
         }
     };
 
-    
+  // Fonction pour modifier la quantité
+    const updateCartQuantity = async (cartItemId, newQuantity) => {
+        const token = localStorage.getItem('token');
+        try {
+            const putQty = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart/${cartItemId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    quantity: newQuantity,
+                }),
+            });
+            const data = await putQty.json();
+            if (putQty.ok) {
+                console.log("updateCartQuantity : ", data);
+            } else {
+                console.error('Erreur lors de la mise à jour de la quantité:', data.message);
+            }
+        }
+        catch (error) {
+            console.error('Erreur réseau:', error);
+        }
+    };
+
+
+
+
+
+    //Fonction pour les slides des films similaires(gauche), mobile.
     const prevSlide = () => {
         const isFirstSlide = currentIndex === 0;
         const newIndex = isFirstSlide ? similarMovies.length - 1 : currentIndex - 1;
         setCurrentIndex(newIndex);
     };
 
+    //Fonction pour les slides des films similaires(droite), mobile.
     const nextSlide = () => {
         const isLastSlide = currentIndex === similarMovies.length - 1;
         const newIndex = isLastSlide ? 0 : currentIndex + 1;
         setCurrentIndex(newIndex);
     };
-    
-    //Fonction non utilisée
-    const addToFavoris = async (movieId) => {
-        const token = localStorage.getItem('token');
-
-        try {
-            // Récupérer la liste des films favoris actuels de l'utilisateur
-            const fetchFavoritesResponse = await fetch('https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!fetchFavoritesResponse.ok) {
-                console.log('Erreur lors de la récupération des favoris');
-            }
-
-            // Récupérer les favoris sous forme de tableau, ou avoir un tableau vide en cas d'échec
-            const responseData = await fetchFavoritesResponse.json();
-            const favoriteMovies = Array.isArray(responseData) ? responseData : responseData.data?.movies || []; // Si le format est un objet contenant 'movies'
-
-            //Afficher le contenu des favoris
-            console.log("favoriteMovies :", favoriteMovies);
-
-            // Vérifier si le film est déjà dans les favoris
-            const isMovieAlreadyFavorite = favoriteMovies.find(favorite => favorite.id === movieId);
-
-            if (isMovieAlreadyFavorite) {
-                console.log("Le film est déjà dans les favoris.");
-                toast.info("Le film est déjà dans vos favoris.");
-                const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/favorite-movies/${movieId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
-                    },
-                })
-                if(response.ok) {
-                    const data = await response.json()
-                    console.log("dataaaaaaaaa : ", data);
-                }
-                // return; // Sortir de la fonction si le film est déjà un favori
-            }
-
-            // Ajouter le film aux favoris s'il n'y est pas déjà
-            console.log("Ajout aux favoris pour le film ID :", movieId);
-
-            const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    movie: {
-                        id: movieId
-                    }
-                })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log("Film ajouté aux favoris :", data);
-                toast.success(data.message);
-            } else {
-                console.error("Erreur lors de l'ajout aux favoris", response.status);
-                toast.error("Erreur lors de l'ajout aux favoris.");
-            }
-        } catch (error) {
-            console.error('Erreur lors de la requête', error);
-            toast.error("Une erreur s'est produite.");
-        }
-    };
-
 
     
     return (
@@ -343,7 +327,7 @@ function MovieDetailsPage() {
                                 <div className="flex justify-between items-center mt-2">
                                     <span className="text-orange-400 text-sm font-semibold">${'100'}</span>
                                     <button 
-                                        onClick={() => addToCart(movieDetails?.id)} 
+                                        onClick={() => addToCart(movieDetails?.id, 1)} 
                                         className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
                                     >
                                         <FontAwesomeIcon icon={faPlus}/>
@@ -381,11 +365,6 @@ function MovieDetailsPage() {
                                             </svg>
                                         </button>
                                     </li>
-                                    {/* {actionIcons.map((icon, index) => (
-                                        <li onClick={() => toggleFavoris(movieDetails.id)} key={index} className={`text-2xl rounded-full p-2 bg-black/50 hover:bg-white/90 duration-500 ease-out border border-gray-700 font-semibold text-orange-500 cursor-pointer`}>
-                                            {icon}
-                                        </li>
-                                    ))} */}
                                 </ul>
 
                                 {/* Films similaires */}
@@ -580,7 +559,7 @@ function MovieDetailsPage() {
                                 <div className="flex items-center gap-6 mt-2">
                                     <span className="text-orange-400 text-lg font-semibold">${'100'}</span>
                                     <button 
-                                        onClick={() => addToCart(movieDetails?.id)} 
+                                        onClick={() => addToCart(movieDetails?.id, 1)} 
                                         className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
                                     >
                                         <FontAwesomeIcon icon={faPlus}/>
@@ -623,4 +602,4 @@ function MovieDetailsPage() {
     )
 }
 
-export default MovieDetailsPage
+export default MovieDetailsPage;

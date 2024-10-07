@@ -17,3 +17,21 @@ function App() {
 }
 
 export default App;
+
+//Petite fonction d'ajout au panier
+// const addToCart = (movieId) => {
+//     // Trouvez le film correspondant avec movieId
+//     if (movieDetails?.id === movieId) {
+//         setCart([...cart, movieDetails]);
+//         toast.success(`${movieDetails.title} a été ajouté au panier`);
+//     }
+// };
+
+// const addToCart = (movieId) => {
+//     // Trouvez le film correspondant avec movieId
+//     const movie = movieFetchData.find(movie => movie.id === movieId);
+//     if (movie) {
+//         setCart([...cart, movie]);
+//         toast.success(`${movie.title} a été ajouté au panier`);
+//     }
+// };
