@@ -157,8 +157,6 @@ function MovieSearchResultsPage() {
 
         const existingItem = await existingCartItem(movieId);
         if (existingItem) {
-            console.log("existingItem ::: ", existingItem);
-            
             // Si le film existe déjà, on modifie la quantité
             updateCartItemQuantity(movieId, existingItem.quantity + 1);
         } 
@@ -182,9 +180,7 @@ function MovieSearchResultsPage() {
                 const data = await response.json();
                     
                 if (response.ok) {
-                    toast.success(data.message)
-                    console.log("dataaaaa : ", data);
-                    
+                    toast.success(data.message)                    
                 } else {
                     console.error("Erreur lors de l'ajout au panier:", data.message);
                 }

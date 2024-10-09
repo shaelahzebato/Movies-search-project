@@ -21,7 +21,6 @@ function MovieDetailsPage() {
     const [loading, setLoading] = useState(false);
     const [favoris, setFavoris] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [quantity, setQuantity] = useState(1);
 
     const navigate = useNavigate();
     const location = useLocation();

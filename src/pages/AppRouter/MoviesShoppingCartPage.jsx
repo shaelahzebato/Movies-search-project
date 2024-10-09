@@ -12,6 +12,8 @@ function MovieShoppingCartPage() {
 
     const [moviesShopCart, setMoviesShopCart]= useState([])
     const [quantity, setQuantity] = useState(1);
+    const [quantities, setQuantities] = useState({});
+
     const [productNumber, setProductNumber] = useState(0)
     const [loading, setLoading] = useState(false);
     
@@ -37,17 +39,43 @@ function MovieShoppingCartPage() {
                     const data = await response.json();
                     const inCart = data.datas
                     setProductNumber(inCart.length)
-                    inCart.map(async movie => {
-                        try {
+
+                    const fetchedMovies = await Promise.all(
+                        inCart.map(async movie => {
                             const response = await fetch(`https://api.themoviedb.org/3/movie/${movie.product_id}?api_key=${apiKey}`);
-                            const data = await response.json()
-                            setQuantity(movie.quantity)
-                            setMoviesShopCart(prevCartList => [...prevCartList, data]);
-                        }
-                        catch(err) {
-                            console.log("Error : ", err);                            
-                        }
-                    })
+                            const data = await response.json();
+                            return { ...data, quantity: movie.quantity, cartItemId: movie.id };
+                        })
+                    );
+                    
+                    setMoviesShopCart(fetchedMovies);
+
+                    // Initialiser les quantités pour chaque produit
+                    const initialQuantities = {};
+                    inCart.forEach(movie => {
+                        initialQuantities[movie.id] = movie.quantity;
+                    });
+                    setQuantities(initialQuantities);
+                    
+                    // inCart.map(async movie => {
+                    //     try {
+                    //         const response = await fetch(`https://api.themoviedb.org/3/movie/${movie.product_id}?api_key=${apiKey}`);
+                    //         const data = await response.json()
+                    //         setQuantity(movie.quantity)
+                    //         setMoviesShopCart(prevCartList => [...prevCartList, data]);
+
+
+                    //         // Initialiser les quantités pour chaque produit
+                    //         const initialQuantities = {};
+                    //         inCart.forEach(movie => {
+                    //             initialQuantities[movie.id] = movie.quantity;
+                    //         });
+                    //         setQuantities(initialQuantities);
+                    //     }
+                    //     catch(err) {
+                    //         console.log("Error : ", err);                            
+                    //     }
+                    // })
                 } else {
                     const errorData = await response.json();
                     console.log(errorData.message);
@@ -79,6 +107,11 @@ function MovieShoppingCartPage() {
                 // fetchShopCart(); // Rafraîchir le panier après la mise à jour
                 console.log("updateCartQuantity : ", data);
                 toast.success(data.message)
+                // Mettre à jour la quantité
+                setQuantities(prevQuantities => ({
+                    ...prevQuantities,
+                    [cartItemId]: newQuantity,
+                }));
             } else {
                 console.error('Erreur lors de la mise à jour de la quantité:', data.message);
             }
@@ -120,21 +153,34 @@ function MovieShoppingCartPage() {
         }
     };
 
-    const incrementQuantity = () => {
-        setQuantity(prevQuantity => prevQuantity + 1);
-    };
     
-    const decrementQuantity = () => {
-        setQuantity(prevQuantity => {
-        if (prevQuantity > 1) {
-                return prevQuantity - 1;
-            } else {
-                return prevQuantity;
-            }
-        });
+    const incrementQuantity = (cartItemId) => {
+        const currentQuantity = quantities[cartItemId] || 1;
+        updateCartQuantity(cartItemId, currentQuantity + 1);
     };
 
+    const decrementQuantity = (cartItemId) => {
+        const currentQuantity = quantities[cartItemId] || 1;
+        if (currentQuantity > 1) {
+            updateCartQuantity(cartItemId, currentQuantity - 1);
+        }
+    };
     
+    // const incrementQuantity = () => {
+    //     setQuantity(prevQuantity => prevQuantity + 1);
+    // };
+    
+    // const decrementQuantity = () => {
+    //     setQuantity(prevQuantity => {
+    //     if (prevQuantity > 1) {
+    //             return prevQuantity - 1;
+    //         } else {
+    //             return prevQuantity;
+    //         }
+    //     });
+    // };
+
+
     return (
         <>
             <div className='bg-black bg-opacity-85 z-50'>
@@ -179,7 +225,8 @@ function MovieShoppingCartPage() {
                                             </div>
                                             <div className="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
                                                 <div className="flex items-center h-full">
-                                                    <button onClick={() => updateCartQuantity(cart.id, quantity - 1)} className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+                                                    {/*cart.cartItemId <button onClick={() => updateCartQuantity(cart.id, quantity - 1)} className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"> */}
+                                                    <button onClick={() => decrementQuantity(cart.id)} className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
                                                         {quantity === 1 ?
                                                             <button onClick={(e) => {e.preventDefault(); removeFromCart(cart.id)}}>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-black hover:text-orange-500 transition duration-300 ease-in-out">
@@ -194,7 +241,8 @@ function MovieShoppingCartPage() {
                                                     <input type="text"
                                                         className="border-y border-gray-200 outline-none text-gray-900 font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-gray-900 py-[12px]  text-center bg-transparent"
                                                         value={quantity}/>
-                                                    <button onClick={() => updateCartQuantity(cart.id, quantity + 1)} className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+                                                    {/* <button onClick={() => updateCartQuantity(cart.id, quantity + 1)} className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"> */}
+                                                    <button onClick={() => incrementQuantity(cart.id)} className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
                                                         <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faPlus}/>
                                                     </button>
                                                 </div>
