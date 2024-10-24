@@ -1,21 +1,21 @@
-import React, {  useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import logo from '../../images/Logo.png'
-import moi from '../../images/moii.png'
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useLocalStorage } from "@uidotdev/usehooks"; // Import du hook
+import logo from '../../images/Logo.png';
+import moi from '../../images/moii.png';
 
 function NavBar() {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [isReOpen, setIsReOpen] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
-    const [error, setError] = useState("")
-    const [userData, setUserData] = useState("")
-
+    const [token, setToken] = useLocalStorage('token', null); // Utilisation de useLocalStorage pour le token
+    const [isAuthenticated, setIsAuthenticated] = useState(!!token);
+    const [error, setError] = useState("");
+    const [userData, setUserData] = useState("");
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const token = localStorage.getItem('token');
-            if (token === undefined) {
+            if (!token) {
                 setError('Token non trouvé !');
                 return;
             }
@@ -37,21 +37,34 @@ function NavBar() {
                     setError(errorData.message);
                 }
             } catch (err) {
-                setError('Erreurrrrrr.');
+                setError('Erreur lors de la récupération des données utilisateur.');
             }
         };
 
         fetchUserData();
-    }, []);
+    }, [token]); // Mettre token comme dépendance pour qu'il réagisse à sa mise à jour
+        
+        
+    //  const logout = (e) => {
+    //      e.preventDefault();
+    //      removeToken(); // Utiliser removeToken pour effacer le token du localStorage
+    //      setIsAuthenticated(false);
+    //      navigate('/');
+    //  };
+    
+    //  const logout = (e) => {
+    //      e.preventDefault()
+    //      localStorage.removeItem('token');
+    //      setIsAuthenticated(false)
+    //      navigate('/');
+    //  };
 
     const logout = (e) => {
-        e.preventDefault()
-        localStorage.removeItem('token');
-        setIsAuthenticated(false)
+        e.preventDefault();
+        setToken(null); // Utilisation de setToken pour supprimer le token du localStorage
+        setIsAuthenticated(false);
         navigate('/');
     };
-
-    
 
     return (
         <div className='container mx-auto'>

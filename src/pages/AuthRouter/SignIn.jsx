@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import homepagebg from '../../images/accueil–1.png'
 import logo from '../../images/Logo.png'
 import toast from 'react-hot-toast';
+// import { useLocalStorage } from 'react-use';
+import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 //Se connecter
 function SignIn() {
@@ -17,6 +19,9 @@ function SignIn() {
         email: '',
         password: '',
     });
+
+    // Utiliser useLocalStorage pour stocker le token
+    const [token, setToken] = useLocalStorage('token', null);
 
     // Fonction de validation
     const enteredDataValidation = () => {
@@ -72,7 +77,8 @@ function SignIn() {
 
             if (response.ok) {
                 // Si la réponse est un succès
-                localStorage.setItem('token', data.access_token);
+                // localStorage.setItem('token', data.access_token);
+                setToken(data.access_token)
                 toast.success(data.message || 'Connexion réussie !');
                 navigate('/');
             } else {

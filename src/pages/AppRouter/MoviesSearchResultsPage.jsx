@@ -147,6 +147,8 @@ function MovieSearchResultsPage() {
         })
 
         const responseMovieInCart = await checkResponse.json();
+        console.log("responseMovieInCart >>>> ", responseMovieInCart);
+
         const cartItems = responseMovieInCart.datas;
         return cartItems.find(item => item.id === movieId);
     };
