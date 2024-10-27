@@ -1,8 +1,7 @@
-import { useState } from 'react';
 import AppRouter from './pages/AppRouter/AppRouter';
 import AuthRouter from './pages/AuthRouter/AuthRouter';
 import { Toaster } from 'react-hot-toast';
-import { useLocalStorage } from 'react-use';
+import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 function App() {
 

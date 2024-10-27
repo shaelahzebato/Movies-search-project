@@ -3,15 +3,17 @@ import apiKey from '../../Api/Api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 function UserFavoris() {
 
+    const [token, setToken] = useLocalStorage('token', null);
     const [loading, setLoading] = useState(false);
     const [favorisList, setFavorisList] = useState([])
 
     useEffect(  () => {
         setLoading(true)
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
         const fetchUserFavoris = async () => {
             try {
                 const response = await fetch("https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies", {

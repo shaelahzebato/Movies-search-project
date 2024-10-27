@@ -4,6 +4,9 @@ import homepagebg from '../../images/accueil–1.png';
 import logo from '../../images/Logo.png';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { useLocalStorage } from "@uidotdev/usehooks"; 
+
+
 //S'inscrire
 function SignUp() {
     const navigate = useNavigate();
@@ -22,6 +25,7 @@ function SignUp() {
         userSurname: '',
         phoneNumber: '',
     });
+    const [token, setToken] = useLocalStorage('token', null);
 
     const [loading, setLoading] = useState(false);
 
@@ -106,7 +110,8 @@ function SignUp() {
             if (response.ok) {
                 // Si la réponse est un succès
                 if (data.access_token !== undefined) {
-                    localStorage.setItem('token', data.access_token);
+                    // localStorage.setItem('token', data.access_token);
+                    setToken(data.access_token)
                     if (data.success) {
                         toast.success(data.message);
                         navigate('/');

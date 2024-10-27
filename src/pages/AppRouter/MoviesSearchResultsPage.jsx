@@ -8,6 +8,7 @@ import NavBar from '../../components/NavBar/NavBar';
 import toast from 'react-hot-toast';
 import apiKey from '../../Api/Api';
 import Footer from '../../components/Footer/Footer';
+import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 
 
@@ -20,6 +21,7 @@ function MovieSearchResultsPage() {
 
     const [errors, setErrors] = useState({ moviename: "" });
     const [loading, setLoading] = useState(false);
+    const [token, setToken] = useLocalStorage('token', null);
 
 
     const handleChangeInput = (e) => {
@@ -72,7 +74,7 @@ function MovieSearchResultsPage() {
     
 
     const addToWatchedList = async (movieId) => {
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
     
         try {
             // 1 : Récupérer la liste des films déjà regardés
@@ -136,7 +138,7 @@ function MovieSearchResultsPage() {
 
     // Fonction pour vérifier si le film existe déjà dans le panier
     const existingCartItem = async (movieId) => {
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
 
         const checkResponse = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
             method: 'GET',
@@ -155,7 +157,7 @@ function MovieSearchResultsPage() {
 
     // Fonction d'ajout au panier
     const addToCart = async (movieId) => {
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
 
         const existingItem = await existingCartItem(movieId);
         if (existingItem) {
@@ -196,7 +198,7 @@ function MovieSearchResultsPage() {
 
     // Modifier la quantité d'un elemebt dans le panier.
     const updateCartItemQuantity = async (movieId, newQuantity) => {
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
 
         try {
             setLoading(true);

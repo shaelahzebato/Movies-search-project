@@ -6,11 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDoubleDown } from '@fortawesome/free-solid-svg-icons'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom';
+import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 function MovieHomePage() {
     const navigate = useNavigate();
     const [movieTitle, setMovieTitle] = useState('');
-    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+    // const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+    const [isAuthenticated, setIsAuthenticated] = useLocalStorage('token', null);
     const [errors, setErrors] = useState({ movieTitle: '' });
 
     const handleInputChange = (e) => {

@@ -7,6 +7,7 @@ import Footer from '../../components/Footer/Footer'
 import apiKey from '../../Api/Api'
 import imgBase from '../../Api/imgBase'
 import toast from 'react-hot-toast'
+import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 function MovieShoppingCartPage() {
 
@@ -16,10 +17,11 @@ function MovieShoppingCartPage() {
 
     const [productNumber, setProductNumber] = useState(0)
     const [loading, setLoading] = useState(false);
+    const [token, setToken] = useLocalStorage('token', null);
+
     
     useEffect(() => {
         const fetchShopCart = async () => {
-            const token = localStorage.getItem('token');
             if (!token || token === undefined) {
                 console.log('Token non trouvé !');
                 return;
@@ -55,6 +57,7 @@ function MovieShoppingCartPage() {
                     inCart.forEach(movie => {
                         initialQuantities[movie.id] = movie.quantity;
                     });
+                    
                     setQuantities(initialQuantities);
                     
                     // inCart.map(async movie => {
@@ -87,9 +90,8 @@ function MovieShoppingCartPage() {
         fetchShopCart()
     }, [])
 
-     // Fonction pour modifier la quantité
+    // Fonction pour modifier la quantité
     const updateCartQuantity = async (cartItemId, newQuantity) => {
-        const token = localStorage.getItem('token');
         try {
             const putQty = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart/${cartItemId}`, {
                 method: 'PUT',
@@ -107,6 +109,7 @@ function MovieShoppingCartPage() {
                 // fetchShopCart(); // Rafraîchir le panier après la mise à jour
                 console.log("updateCartQuantity : ", data);
                 toast.success(data.message)
+
                 // Mettre à jour la quantité
                 setQuantities(prevQuantities => ({
                     ...prevQuantities,
@@ -124,8 +127,6 @@ function MovieShoppingCartPage() {
 
     // Fonction pour retirer du panier
     const removeFromCart = async (cartItemId) => {
-        const token = localStorage.getItem('token');
-
         try {
             setLoading(true);
             const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart/${cartItemId}`, {

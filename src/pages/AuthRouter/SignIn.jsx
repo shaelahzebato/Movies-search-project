@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import homepagebg from '../../images/accueil–1.png'
 import logo from '../../images/Logo.png'
 import toast from 'react-hot-toast';
-// import { useLocalStorage } from 'react-use';
+
 import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 //Se connecter

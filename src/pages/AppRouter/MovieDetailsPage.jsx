@@ -10,10 +10,12 @@ import apiKey from '../../Api/Api'
 import imgBase from '../../Api/imgBase';
 import NavBar from '../../components/NavBar/NavBar'
 import Footer from '../../components/Footer/Footer';
+import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 
 function MovieDetailsPage() {
 
+    const [token, setToken] = useLocalStorage('token', null);
     const [searchParams] = useSearchParams();
     const movieId = searchParams.get('id');
     const [movieDetails, setMovieDetails] = useState();
@@ -68,7 +70,7 @@ function MovieDetailsPage() {
 
     //Ce code vérifi si un film est bien en favori ou non, et fait un affichage de coeur en fonction
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
         const fetchIfMovieIsFav = async () => {
             try {
                 const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
@@ -99,7 +101,7 @@ function MovieDetailsPage() {
 
     //Ce code ajoute et retire en favoris en fonction de l'etat.
     const toggleFavoris = async (movieId) => {
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
     
         try {
             // Vérification si le film est déjà en favoris /api/v1/users/favorites-movies
@@ -162,7 +164,7 @@ function MovieDetailsPage() {
         
     // Fonction pour ajouter au panier
     const addToCart = async (productId, quantity = 1) => {
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
 
         const checkResponse = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
             method: 'GET',
@@ -219,7 +221,7 @@ function MovieDetailsPage() {
 
   // Fonction pour modifier la quantité
     const updateCartQuantity = async (cartItemId, newQuantity) => {
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
         try {
             const putQty = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart/${cartItemId}`, {
                 method: 'PUT',

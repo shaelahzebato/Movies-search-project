@@ -3,15 +3,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import apiKey from '../../Api/Api';
+import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 function MoviesWatchedByUser() {
   
     const [loading, setLoading] = useState(false);
     const [movieWatchedList, setMovieWatchedList] = useState([])
+    const [token, setToken] = useLocalStorage('token', null);
 
     useEffect( () => {
         setLoading(true)
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
         const fetchMovieWatchedByUser = async () => {
             try {
                 const response = await fetch("https:/symbian.stvffmn.com/nady/public/api/v1/users/watched-movies", {

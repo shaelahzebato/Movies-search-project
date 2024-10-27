@@ -6,6 +6,7 @@ import Footer from '../../components/Footer/Footer';
 import UserFavoris from '../../components/UserFavoris/UserFavoris';
 import MoviesWatchedByUser from '../../components/MoviesWatchedUser/MoviesWatchedByUser';
 import Playlist from '../../components/Playlist/Playlist';
+import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 function UserProfilePage() {
     const [activeTab, setActiveTab] = useState(0);
@@ -19,11 +20,12 @@ function UserProfilePage() {
 
     const [userData, setUserData] = useState('');
     const [error, setError] = useState("");
+    const [token, setToken] = useLocalStorage('token', null);
 
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const token = localStorage.getItem('token');
+            // const token = localStorage.getItem('token');
             if (!token || token === undefined) {
                 setError('Token non trouvé !');
                 return;
