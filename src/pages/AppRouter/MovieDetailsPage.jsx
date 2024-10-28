@@ -602,10 +602,34 @@ function MovieDetailsPage() {
                                     <span className="text-orange-400 text-lg font-semibold">${'100'}</span>
                                     <button 
                                         onClick={() => addToCart(movieDetails?.id, 1)} 
-                                        className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
-                                    >
-                                        <FontAwesomeIcon icon={faPlus}/>
-                                        <span>Panier</span>
+                                        className={`flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none ${loading ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
+                                        disabled={loading}
+                                        >
+                                            {loading ? (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="h-4 w-4 rounded-full border-2 border-dashed animate-spin"></div>
+                                                    <span>Ajout...</span>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    {existingCartItemBtn ? (
+                                                        <div className="flex items-center gap-1 h-full">
+                                                            <button>    
+                                                                <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faMinus}/>    
+                                                            </button>
+                                                            <input type="text" className="border-y border-x border-gray-200 outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent" value="1"/>
+                                                            <button>
+                                                                <FontAwesomeIcon icon={faPlus}/>
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center gap-2">
+                                                            <FontAwesomeIcon icon={faPlus}/>
+                                                            <span>Panier</span>
+                                                        </div>     
+                                                    )} 
+                                                </>
+                                            )}
                                     </button>
                                 </div>
                                 {
