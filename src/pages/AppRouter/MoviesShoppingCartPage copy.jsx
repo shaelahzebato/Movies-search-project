@@ -12,69 +12,88 @@ import { useLocalStorage } from "@uidotdev/usehooks";
 function MovieShoppingCartPage() {
 
     const [moviesShopCart, setMoviesShopCart]= useState([])
+    const [quantity, setQuantity] = useState(1);
     const [quantities, setQuantities] = useState({});
+
     const [productNumber, setProductNumber] = useState(0)
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useLocalStorage('token', null);
 
     
-    const fetchShopCart = async () => {
-        if (!token || token === undefined) {
-            console.log('Token non trouvé !');
-            return;
-        }
-
-        try {
-            const response = await fetch('https://symbian.stvffmn.com/nady/public/api/v1/users/cart', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                const inCart = data.datas
-                setProductNumber(inCart.length)
-
-                const fetchedMovies = await Promise.all(
-                    inCart.map(async movie => {
-                        const response = await fetch(`https://api.themoviedb.org/3/movie/${movie.product_id}?api_key=${apiKey}`);
-                        const data = await response.json();
-                        return { ...data, quantity: movie.quantity, cartItemId: movie.id };
-                    })
-                );
-                
-                setMoviesShopCart(fetchedMovies);
-
-                // Initialiser les quantités pour chaque produit
-                const initialQuantities = {};
-                inCart.forEach(movie => {
-                    initialQuantities[movie.id] = movie.quantity;
+    useEffect(() => {
+        const fetchShopCart = async () => {
+            if (!token || token === undefined) {
+                console.log('Token non trouvé !');
+                return;
+            }
+    
+            try {
+                const response = await fetch('https:/symbian.stvffmn.com/nady/public/api/v1/users/cart', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
                 });
                 
-                setQuantities(initialQuantities);
-                
-                console.log("setQuantities(initialQuantities); ::: ", initialQuantities);
-                
-            } else {
-                const errorData = await response.json();
-                console.log(errorData.message);
+                if (response.ok) {
+                    const data = await response.json();
+                    const inCart = data.datas
+                    setProductNumber(inCart.length)
+
+                    const fetchedMovies = await Promise.all(
+                        inCart.map(async movie => {
+                            const response = await fetch(`https://api.themoviedb.org/3/movie/${movie.product_id}?api_key=${apiKey}`);
+                            const data = await response.json();
+                            return { ...data, quantity: movie.quantity, cartItemId: movie.id };
+                        })
+                    );
+                    
+                    setMoviesShopCart(fetchedMovies);
+
+                    // Initialiser les quantités pour chaque produit
+                    const initialQuantities = {};
+                    inCart.forEach(movie => {
+                        initialQuantities[movie.id] = movie.quantity;
+                    });
+                    
+                    setQuantities(initialQuantities);
+                    
+                    // inCart.map(async movie => {
+                    //     try {
+                    //         const response = await fetch(`https://api.themoviedb.org/3/movie/${movie.product_id}?api_key=${apiKey}`);
+                    //         const data = await response.json()
+                    //         setQuantity(movie.quantity)
+                    //         setMoviesShopCart(prevCartList => [...prevCartList, data]);
+
+
+                    //         // Initialiser les quantités pour chaque produit
+                    //         const initialQuantities = {};
+                    //         inCart.forEach(movie => {
+                    //             initialQuantities[movie.id] = movie.quantity;
+                    //         });
+                    //         setQuantities(initialQuantities);
+                    //     }
+                    //     catch(err) {
+                    //         console.log("Error : ", err);                            
+                    //     }
+                    // })
+                } else {
+                    const errorData = await response.json();
+                    console.log(errorData.message);
+                }
+            } catch (err) {
+                console.log('Erreurrrrrr.');
             }
-        } catch (err) {
-            console.log('Erreurrrrrr.');
-        }
-    };
-    useEffect(() => {
+        };
         fetchShopCart()
     }, [])
 
     // Fonction pour modifier la quantité
     const updateCartQuantity = async (cartItemId, newQuantity) => {
         try {
-            const putQty = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart/${cartItemId}`, {
+            const putQty = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart/${cartItemId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -122,7 +141,7 @@ function MovieShoppingCartPage() {
             if (response.ok) {
                 console.log("deleteee : ", data, data.message);
                 toast.success(data.message)
-                fetchShopCart(); // Rafraîchir le panier après la suppression
+                // fetchShopCart(); // Rafraîchir le panier après la suppression
             } else {
                 console.error('Erreur lors de la suppression du produit:', data.message);
             }
@@ -146,8 +165,22 @@ function MovieShoppingCartPage() {
         if (currentQuantity > 1) {
             updateCartQuantity(cartItemId, currentQuantity - 1);
         }
-    }; 
+    };
     
+    // const incrementQuantity = () => {
+    //     setQuantity(prevQuantity => prevQuantity + 1);
+    // };
+    
+    // const decrementQuantity = () => {
+    //     setQuantity(prevQuantity => {
+    //     if (prevQuantity > 1) {
+    //             return prevQuantity - 1;
+    //         } else {
+    //             return prevQuantity;
+    //         }
+    //     });
+    // };
+
 
     return (
         <>
@@ -193,8 +226,9 @@ function MovieShoppingCartPage() {
                                             </div>
                                             <div className="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
                                                 <div className="flex items-center h-full">
+                                                    {/*cart.cartItemId <button onClick={() => updateCartQuantity(cart.id, quantity - 1)} className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"> */}
                                                     <button onClick={() => decrementQuantity(cart.id)} className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
-                                                        {cart.quantity === 1 ?
+                                                        {quantity === 1 ?
                                                             <button onClick={(e) => {e.preventDefault(); removeFromCart(cart.id)}}>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-black hover:text-orange-500 transition duration-300 ease-in-out">
                                                                 <path d="M9 3H7.5a1.5 1.5 0 0 0-1.5 1.5v.75H3.75a.75.75 0 0 0 0 1.5H5v12A2.25 2.25 0 0 0 7.25 21.75h9.5A2.25 2.25 0 0 0 19 19.5V7.5h1.25a.75.75 0 0 0 0-1.5H18v-.75A1.5 1.5 0 0 0 16.5 3H15V1.5A1.5 1.5 0 0 0 13.5 0h-3A1.5 1.5 0 0 0 9 1.5V3Zm1.5-1.5h3V3h-3V1.5Zm-3 6.75a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-9Zm6 0a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75v-9Z"/>
@@ -207,15 +241,15 @@ function MovieShoppingCartPage() {
                                                     </button>
                                                     <input type="text"
                                                         className="border-y border-gray-200 outline-none text-gray-900 font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-gray-900 py-[12px]  text-center bg-transparent"
-                                                        value={quantities[cart.id] || cart.quantity} />
-                                                    <button onClick={() => {incrementQuantity(cart.id); console.log("cart>>>", cart);
-                                                    }} className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+                                                        value={quantity}/>
+                                                    {/* <button onClick={() => updateCartQuantity(cart.id, quantity + 1)} className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"> */}
+                                                    <button onClick={() => incrementQuantity(cart.id)} className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
                                                         <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faPlus}/>
                                                     </button>
                                                 </div>
                                             </div>
                                             <div className="flex items-center max-[500px]:justify-center md:justify-end max-md:mt-3 h-full">
-                                                <p className="font-bold text-lg leading-8 text-gray-600 text-center transition-all duration-300 group-hover:text-orange-600">${120.00 }</p> {/***quantity */}
+                                                <p className="font-bold text-lg leading-8 text-gray-600 text-center transition-all duration-300 group-hover:text-orange-600">${120.00 * quantity}</p>
                                             </div>
                                         </div>
                                     </div>

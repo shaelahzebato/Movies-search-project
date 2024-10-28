@@ -16,7 +16,7 @@ function MoviesWatchedByUser() {
         // const token = localStorage.getItem('token');
         const fetchMovieWatchedByUser = async () => {
             try {
-                const response = await fetch("https:/symbian.stvffmn.com/nady/public/api/v1/users/watched-movies", {
+                const response = await fetch("https://symbian.stvffmn.com/nady/public/api/v1/users/watched-movies", {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,

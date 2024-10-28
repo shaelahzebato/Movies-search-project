@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import toast from 'react-hot-toast';
@@ -23,8 +23,6 @@ function MovieDetailsPage() {
     const [loading, setLoading] = useState(false);
     const [favoris, setFavoris] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [existingCartItemBtn, setExistingCartItemBtn] = useState(false);
-
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -75,7 +73,7 @@ function MovieDetailsPage() {
         // const token = localStorage.getItem('token');
         const fetchIfMovieIsFav = async () => {
             try {
-                const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
+                const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies/${movieId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -163,28 +161,12 @@ function MovieDetailsPage() {
         }
     };
     
-
-    const existingCartItem = async (movieId) => {
-        const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json',
-            },
-        })
-
-        const responseMovieInCart = await checkResponse.json();
-        console.log("responseMovieInCart >>>> ", responseMovieInCart);
-
-        const cartItems = responseMovieInCart.datas;
-        return cartItems.find(item => item.id === movieId);
-    };
         
     // Fonction pour ajouter au panier
     const addToCart = async (productId, quantity = 1) => {
         // const token = localStorage.getItem('token');
 
-        const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+        const checkResponse = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -193,17 +175,21 @@ function MovieDetailsPage() {
             },
         })
 
-        const existingItem = await existingCartItem(movieId);
-        if (existingItem) {
-            setExistingCartItemBtn(true);
-            // Si le film existe déjà, on modifie la quantité
-            updateCartQuantity(movieId, existingItem.quantity + 1);
-        } 
+        const responseMovieInCart = await checkResponse.json();
+        const cartItems = responseMovieInCart.datas;
+
+        // Vérification si le produit est déjà dans le panier
+        const existingCartItem = cartItems.find((item) => item.product_id === productId);
+        console.log("existingCartItem :: ", existingCartItem);
+        
+
+        if (existingCartItem) {
+            // Si le produit existe déjà, mettre à jour la quantité
+            await updateCartQuantity(existingCartItem.id, existingCartItem.quantity + quantity);
+        }
         else {
             try {
-                setExistingCartItemBtn(false)
-                setLoading(true);
-                const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+                const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -222,7 +208,7 @@ function MovieDetailsPage() {
                 
                 if (response.ok) {
                     console.log("dataaaaa : ", data);
-                    toast.success(data.message)                    
+                    
                 } else {
                     console.error("Erreur lors de l'ajout au panier:", data.message);
                 }
@@ -230,16 +216,14 @@ function MovieDetailsPage() {
             catch (error) {
                 console.error('Erreur réseau:', error);
             }
-            finally {
-                setLoading(false);
-            }
         }
     };
 
   // Fonction pour modifier la quantité
     const updateCartQuantity = async (cartItemId, newQuantity) => {
+        // const token = localStorage.getItem('token');
         try {
-            const putQty = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart/${cartItemId}`, {
+            const putQty = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart/${cartItemId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -346,34 +330,10 @@ function MovieDetailsPage() {
                                     <span className="text-orange-400 text-sm font-semibold">${'100'}</span>
                                     <button 
                                         onClick={() => addToCart(movieDetails?.id, 1)} 
-                                        className={`flex items-center justify-center gap-2 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out focus:outline-none ${loading ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
-                                        disabled={loading}
-                                        >
-                                            {loading ? (
-                                                <div className="flex items-center gap-2">
-                                                    <div className="h-4 w-4 rounded-full border-2 border-dashed animate-spin"></div>
-                                                    <span>Ajout...</span>
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    {existingCartItemBtn ? (
-                                                        <div className="flex items-center gap-1 h-full">
-                                                            <button>    
-                                                                <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faMinus}/>    
-                                                            </button>
-                                                            <input type="text" className="border-y border-x border-gray-200 outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent" value="1"/>
-                                                            <button>
-                                                                <FontAwesomeIcon icon={faPlus}/>
-                                                            </button>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="flex items-center gap-2">
-                                                            <FontAwesomeIcon icon={faPlus}/>
-                                                            <span>Panier</span>
-                                                        </div>     
-                                                    )} 
-                                                </>
-                                            )}
+                                        className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
+                                    >
+                                        <FontAwesomeIcon icon={faPlus}/>
+                                        <span>Panier</span>
                                     </button>
                                 </div>
 

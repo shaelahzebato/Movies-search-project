@@ -16,7 +16,7 @@ function UserFavoris() {
         // const token = localStorage.getItem('token');
         const fetchUserFavoris = async () => {
             try {
-                const response = await fetch("https:/symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies", {
+                const response = await fetch("https://symbian.stvffmn.com/nady/public/api/v1/users/favorites-movies", {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,

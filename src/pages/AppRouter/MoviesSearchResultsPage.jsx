@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 
 import searchImg from '../../images/Resultats-de-recherche–1.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import NavBar from '../../components/NavBar/NavBar';
 import toast from 'react-hot-toast';
 import apiKey from '../../Api/Api';
@@ -22,6 +22,7 @@ function MovieSearchResultsPage() {
     const [errors, setErrors] = useState({ moviename: "" });
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useLocalStorage('token', null);
+    const [existingCartItemBtn, setExistingCartItemBtn] = useState(false);
 
 
     const handleChangeInput = (e) => {
@@ -78,7 +79,7 @@ function MovieSearchResultsPage() {
     
         try {
             // 1 : Récupérer la liste des films déjà regardés
-            const fetchWatchedResponse = await fetch('https:/symbian.stvffmn.com/nady/public/api/v1/users/watched-movies', {
+            const fetchWatchedResponse = await fetch('https://symbian.stvffmn.com/nady/public/api/v1/users/watched-movies', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -106,7 +107,7 @@ function MovieSearchResultsPage() {
             }
     
             // 3 : Ajouter le film à la liste des films regardés s'il n'y est pas déjà
-            const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/watched-movies`, {
+            const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/watched-movies`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -138,9 +139,7 @@ function MovieSearchResultsPage() {
 
     // Fonction pour vérifier si le film existe déjà dans le panier
     const existingCartItem = async (movieId) => {
-        // const token = localStorage.getItem('token');
-
-        const checkResponse = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+        const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -161,11 +160,13 @@ function MovieSearchResultsPage() {
 
         const existingItem = await existingCartItem(movieId);
         if (existingItem) {
+            setExistingCartItemBtn(true);
             // Si le film existe déjà, on modifie la quantité
             updateCartItemQuantity(movieId, existingItem.quantity + 1);
         } 
         else {
             try {
+                setExistingCartItemBtn(false)
                 setLoading(true);
                 const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
                     method: 'POST',
@@ -202,7 +203,7 @@ function MovieSearchResultsPage() {
 
         try {
             setLoading(true);
-            const response = await fetch(`https:/symbian.stvffmn.com/nady/public/api/v1/users/cart/${movieId}`, {
+            const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart/${movieId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -278,10 +279,34 @@ function MovieSearchResultsPage() {
                                                 <span className="text-orange-400 text-sm font-semibold">${movie.budget || '100'}</span>
                                                 <button  // Empêche la propagation de l'événement de clic;
                                                     onClick={(e) => { e.stopPropagation(); e.preventDefault(); addToCart(movie.id); }} 
-                                                    className="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-orange-600 focus:outline-none"
+                                                    className={`flex items-center justify-center gap-2 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out focus:outline-none ${loading ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
+                                                    disabled={loading}
                                                 >
-                                                    <FontAwesomeIcon icon={faPlus}/>
-                                                    <span>Panier</span>
+                                                    {loading ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="h-4 w-4 rounded-full border-2 border-dashed animate-spin"></div>
+                                                            <span>Ajout...</span>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            {existingCartItemBtn ? (
+                                                                <div className="flex items-center gap-1 h-full">
+                                                                    <button>    
+                                                                        <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faMinus}/>    
+                                                                    </button>
+                                                                    <input type="text" className="border-y border-x border-gray-200 outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent" value="1"/>
+                                                                    <button>
+                                                                        <FontAwesomeIcon icon={faPlus}/>
+                                                                    </button>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="flex items-center gap-2">
+                                                                    <FontAwesomeIcon icon={faPlus}/>
+                                                                    <span>Panier</span>
+                                                                </div>     
+                                                            )} 
+                                                        </>
+                                                    )}
                                                 </button>
                                             </div>
                                         </div>
