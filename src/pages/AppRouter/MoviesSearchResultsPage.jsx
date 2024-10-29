@@ -22,7 +22,7 @@ function MovieSearchResultsPage() {
     const [errors, setErrors] = useState({ moviename: "" });
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useLocalStorage('token', null);
-    const [existingCartItemBtn, setExistingCartItemBtn] = useState(false);
+    const [existingCartItemBtn, setExistingCartItemBtn] = useState(true);
 
 
     const handleChangeInput = (e) => {
@@ -75,7 +75,6 @@ function MovieSearchResultsPage() {
     
 
     const addToWatchedList = async (movieId) => {
-        // const token = localStorage.getItem('token');
     
         try {
             // 1 : Récupérer la liste des films déjà regardés
@@ -156,7 +155,6 @@ function MovieSearchResultsPage() {
 
     // Fonction d'ajout au panier
     const addToCart = async (movieId) => {
-        // const token = localStorage.getItem('token');
 
         const existingItem = await existingCartItem(movieId);
         if (existingItem) {
@@ -199,7 +197,6 @@ function MovieSearchResultsPage() {
 
     // Modifier la quantité d'un elemebt dans le panier.
     const updateCartItemQuantity = async (movieId, newQuantity) => {
-        // const token = localStorage.getItem('token');
 
         try {
             setLoading(true);
@@ -294,15 +291,17 @@ function MovieSearchResultsPage() {
                                                                     <button>    
                                                                         <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faMinus}/>    
                                                                     </button>
-                                                                    <input type="text" className="border-y border-x border-gray-200 outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent" value="1"/>
+                                                                    <input type="text" className="outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent" value="1"/>
                                                                     <button>
                                                                         <FontAwesomeIcon icon={faPlus}/>
                                                                     </button>
                                                                 </div>
                                                             ) : (
                                                                 <div className="flex items-center gap-2">
-                                                                    <FontAwesomeIcon icon={faPlus}/>
-                                                                    <span>Panier</span>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeLinejoin="1.5" stroke="currentColor" className="size-6">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                                                    </svg>
+                                                                    <span>Ajouter</span>
                                                                 </div>     
                                                             )} 
                                                         </>

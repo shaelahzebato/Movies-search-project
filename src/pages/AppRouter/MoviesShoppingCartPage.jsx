@@ -87,7 +87,6 @@ function MovieShoppingCartPage() {
             });
             const data = await putQty.json();
             if (putQty.ok) {
-                // fetchShopCart(); // Rafraîchir le panier après la mise à jour
                 console.log("updateCartQuantity : ", data);
                 toast.success(data.message)
 
@@ -96,6 +95,7 @@ function MovieShoppingCartPage() {
                     ...prevQuantities,
                     [cartItemId]: newQuantity,
                 }));
+                fetchShopCart(); // Rafraîchir le panier après la mise à jour
             } else {
                 console.error('Erreur lors de la mise à jour de la quantité:', data.message);
             }

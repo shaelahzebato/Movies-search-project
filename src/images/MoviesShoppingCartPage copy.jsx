@@ -2,10 +2,10 @@ import { faArrowRight, faMinus, faPlus, faTrash } from '@fortawesome/free-solid-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import NavBar from '../../components/NavBar/NavBar'
-import Footer from '../../components/Footer/Footer'
-import apiKey from '../../Api/Api'
-import imgBase from '../../Api/imgBase'
+import NavBar from '../components/NavBar/NavBar'
+import Footer from '../components/Footer/Footer'
+import apiKey from '../Api/Api'
+import imgBase from '../Api/imgBase'
 import toast from 'react-hot-toast'
 import { useLocalStorage } from "@uidotdev/usehooks"; 
 

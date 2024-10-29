@@ -6,10 +6,10 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import toast from 'react-hot-toast';
-import apiKey from '../../Api/Api'
-import imgBase from '../../Api/imgBase';
-import NavBar from '../../components/NavBar/NavBar'
-import Footer from '../../components/Footer/Footer';
+import apiKey from '../Api/Api'
+import imgBase from '../Api/imgBase';
+import NavBar from '../components/NavBar/NavBar'
+import Footer from '../components/Footer/Footer';
 import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 
