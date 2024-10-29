@@ -338,7 +338,7 @@ function MovieDetailsPage() {
                                         </div>
                                     <p className="text-sm">{movieDetails?.overview}</p>
                                 </div>
-                                <div className="flex justify-between items-center mt-2 mb-20">
+                                <div className="flex justify-between items-center mt-2 mb-14">
                                     <span className="text-orange-400 text-2xl font-semibold">${'100'}</span>
                                     <button 
                                         onClick={() => addToCart(movieDetails?.id, 1)} 
