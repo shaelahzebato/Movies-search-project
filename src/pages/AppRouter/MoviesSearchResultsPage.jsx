@@ -22,7 +22,7 @@ function MovieSearchResultsPage() {
     const [errors, setErrors] = useState({ moviename: "" });
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useLocalStorage('token', null);
-    const [existingCartItemBtn, setExistingCartItemBtn] = useState(true);
+    const [existingCartItemBtn, setExistingCartItemBtn] = useState(false);
 
 
     const handleChangeInput = (e) => {
