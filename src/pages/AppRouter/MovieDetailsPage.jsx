@@ -342,7 +342,7 @@ function MovieDetailsPage() {
                                     <span className="text-orange-400 text-sm font-semibold">${'100'}</span>
                                     <button 
                                         onClick={() => addToCart(movieDetails?.id, 1)} 
-                                        className={`flex items-center justify-center gap-2 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out focus:outline-none ${loading ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
+                                        className={`flex items-center justify-center gap-2 text-white text-sm transition duration-300 ease-in-out focus:outline-none ${loading ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
                                         disabled={loading}
                                         >
                                             {loading ? (
@@ -408,7 +408,7 @@ function MovieDetailsPage() {
                                         </button>
                                     </li>
                                 </ul> */}
-                                <ul className="flex items-center justify-center gap-4">
+                                <ul className="flex flex-col justify-center gap-4">
                                             <li>
                                                 <button onClick={() => toggleFavoris(movieDetails.id)}>
                                                     {
