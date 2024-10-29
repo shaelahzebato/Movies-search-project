@@ -339,7 +339,7 @@ function MovieDetailsPage() {
                                     <p className="text-sm">{movieDetails?.overview}</p>
                                 </div>
                                 <div className="flex justify-between items-center mt-2">
-                                    <span className="text-orange-400 text-sm font-semibold">${'100'}</span>
+                                    <span className="text-orange-400 text-xl font-semibold">${'100'}</span>
                                     <button 
                                         onClick={() => addToCart(movieDetails?.id, 1)} 
                                         className={`flex items-center justify-center gap-2 text-white text-sm transition duration-300 ease-in-out focus:outline-none ${loading ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
