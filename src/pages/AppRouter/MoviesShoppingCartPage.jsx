@@ -95,7 +95,7 @@ function MovieShoppingCartPage() {
                     ...prevQuantities,
                     [cartItemId]: newQuantity,
                 }));
-                fetchShopCart(); // Rafraîchir le panier après la mise à jour
+                // fetchShopCart(); // Rafraîchir le panier après la mise à jour
             } else {
                 console.error('Erreur lors de la mise à jour de la quantité:', data.message);
             }

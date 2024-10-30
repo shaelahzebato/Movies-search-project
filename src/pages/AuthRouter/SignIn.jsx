@@ -77,9 +77,11 @@ function SignIn() {
 
             if (response.ok) {
                 // Si la réponse est un succès
-                // localStorage.setItem('token', data.access_token);
                 setToken(data.access_token)
                 toast.success(data.message || 'Connexion réussie !');
+                const expiryTime = Date.now() + data.expires_in * 1000; // `expires_in` est la durée en secondes
+                
+                localStorage.setItem('tokenExpiry', expiryTime);
                 navigate('/');
             } else {
                 // Si la réponse est une erreur
