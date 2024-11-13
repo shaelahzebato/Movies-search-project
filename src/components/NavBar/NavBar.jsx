@@ -35,6 +35,8 @@ function NavBar() {
                 } else {
                     const errorData = await response.json();
                     setError(errorData.message);
+                    console.log("errorData ::: ", errorData);
+                    
                 }
             } catch (err) {
                 setError('Erreur lors de la récupération des données utilisateur.');

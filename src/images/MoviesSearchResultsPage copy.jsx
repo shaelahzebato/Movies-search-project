@@ -4,10 +4,10 @@ import { Link, useSearchParams } from 'react-router-dom';
 import searchImg from '../../images/Resultats-de-recherche–1.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
-import NavBar from '../../components/NavBar/NavBar';
+import NavBar from '../components/NavBar/NavBar';
 import toast from 'react-hot-toast';
-import apiKey from '../../Api/Api';
-import Footer from '../../components/Footer/Footer';
+import apiKey from '../Api/Api';
+import Footer from '../components/Footer/Footer';
 import { useLocalStorage } from "@uidotdev/usehooks"; 
 
 
@@ -136,7 +136,24 @@ function MovieSearchResultsPage() {
             toast.error("Une erreur s'est produite lors de l'ajout à la liste des films regardés."); //L'erreur ici
         }
     };
+    
 
+    // Fonction pour vérifier si le film existe déjà dans le panier
+    // const existingCartItem = async (movieId) => {
+    //     const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Authorization': `Bearer ${token}`,
+    //             'Accept': 'application/json',
+    //         },
+    //     })
+
+    //     const responseMovieInCart = await checkResponse.json();
+    //     console.log("responseMovieInCart >>>> ", responseMovieInCart);
+
+    //     const cartItems = responseMovieInCart.datas;
+    //     return cartItems.find(item => item.id === movieId);
+    // };
 
 
     const existingCartItem = async (movieId) => {
@@ -149,9 +166,11 @@ function MovieSearchResultsPage() {
         });
     
         const responseMovieInCart = await checkResponse.json();
+        console.log("responseMovieInCart >>>> ", responseMovieInCart);
         
         // Vérifiez que les données sont bien présentes
         const cartItems = responseMovieInCart.datas;
+        console.log("result cartItems >>>>>>>> ", cartItems);
     
         // Utilisez reduce de manière synchrone
         const cartQuantities = cartItems.reduce((acc, item) => {
@@ -159,49 +178,23 @@ function MovieSearchResultsPage() {
             return acc;
         }, {});
         
+        
+        console.log("Quantités dans le panier >>>>>>>> ", cartQuantities);
         setExistingCartItemBtn(cartQuantities)
         // Cherchez l'élément spécifique par ID
         return cartItems.find(item => item.id === movieId);
     };
     
 
-    const loadCartItems = async () => {
-        try {
-            const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                },
-            });
-    
-            const responseMovieInCart = await checkResponse.json();
-            const cartItems = responseMovieInCart.datas;
-
-            // Construire un objet avec les quantités d'articles dans le panier
-            const cartQuantities = cartItems.reduce((acc, item) => {
-                acc[item.product_id] = item.quantity;
-                return acc;
-            }, {});
-
-            setExistingCartItemBtn(cartQuantities);
-        } catch (error) {
-            console.error("Erreur lors du chargement des articles du panier:", error);
-        }
-    };
-    useEffect(() => {
-    
-        loadCartItems();
-    }, [token]);
-    
     // Fonction d'ajout au panier
     const addToCart = async (movieId) => {
-        const existingItemQuantity = existingCartItemBtn?.[movieId];
-    
-        if (existingItemQuantity) {
-            // Si le film est déjà dans le panier, on incrémente la quantité
-            updateCartItemQuantity(movieId, existingItemQuantity + 1);
-        } else {
+
+        const existingItem = await existingCartItem(movieId);
+        if (existingItem) {
+            // Si le film existe déjà, on modifie la quantité
+            updateCartItemQuantity(movieId, existingItem.quantity + 1);
+        } 
+        else {
             try {
                 setLoading(true);
                 const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
@@ -221,20 +214,17 @@ function MovieSearchResultsPage() {
                 const data = await response.json();
                     
                 if (response.ok) {
-                    toast.success(data.message);
-                    setExistingCartItemBtn(prev => ({ ...prev, [movieId]: 1 })); // Met à jour le bouton d'ajout
+                    toast.success(data.message)                    
                 } else {
                     console.error("Erreur lors de l'ajout au panier:", data.message);
                 }
             } catch (error) {
-                console.error("Erreur lors de l'ajout de l'article au panier:", error);
+                console.error("Error adding item to cart:", error);
             } finally {
                 setLoading(false);
             }
         }
     };
-    
-
 
     // Modifier la quantité d'un elemebt dans le panier.
     const updateCartItemQuantity = async (movieId, newQuantity) => {
@@ -254,7 +244,6 @@ function MovieSearchResultsPage() {
             });
             const data = await response.json();
             if (response.ok) {
-                loadCartItems()
                 console.log("updateCartQuantity : ", data);
             } else {
                 console.error('Erreur lors de la mise à jour de la quantité:', data.message);
@@ -269,50 +258,6 @@ function MovieSearchResultsPage() {
     };
 
     
-
-    const incrementCartItemQuantity = (movieId) => {
-        const currentQuantity = existingCartItemBtn[movieId] || 0;
-        updateCartItemQuantity(movieId, currentQuantity + 1);
-    };
-
-    const decrementCartItemQuantity = (movieId) => {
-        const currentQuantity = existingCartItemBtn[movieId] || 0;
-        if (currentQuantity > 1) {
-            updateCartItemQuantity(movieId, currentQuantity - 1);
-        } else {
-            removeCartItem(movieId);
-        }
-    };
-
-    const removeCartItem = async (movieId) => {
-        try {
-            setLoading(true);
-            const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart/${movieId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                setExistingCartItemBtn(prev => {
-                    const newCartItems = { ...prev };
-                    delete newCartItems[movieId];
-                    return newCartItems;
-                });
-                toast.success("Film retiré du panier.");
-            } else {
-                console.error('Erreur lors de la suppression de l\'élément du panier.');
-            }
-        } 
-        catch (error) {
-            console.error("Error removing item from cart:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
 
 
     return (
@@ -360,12 +305,7 @@ function MovieSearchResultsPage() {
                                         <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ease-in-out group-hover:opacity-100 opacity-80">
                                             <h1 className="text-white text-lg font-bold Montserrat">{movie.title}</h1>
                                             <div className="flex justify-between items-center mt-2">
-                                                {/* <span className="text-orange-400 text-sm font-semibold">${movie.budget || existingCartItemBtn[movie.id] ? 100 * existingCartItemBtn[movie.id] : 100}</span> */}
-                                                <span className="text-orange-400 text-lg font-semibold">
-                                                    ${existingCartItemBtn && movie.id in existingCartItemBtn
-                                                        ? 100 * existingCartItemBtn[movie.id]
-                                                        : 100}
-                                                </span>
+                                                <span className="text-orange-400 text-sm font-semibold">${movie.budget || '100'}</span>
                                                 <button  // Empêche la propagation de l'événement de clic;
                                                     onClick={(e) => { e.stopPropagation(); e.preventDefault(); addToCart(movie.id); }} 
                                                     className={`flex items-center justify-center gap-2 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out focus:outline-none ${loading ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
@@ -380,11 +320,11 @@ function MovieSearchResultsPage() {
                                                         <>
                                                             {existingCartItemBtn && existingCartItemBtn[movie.id] ? (
                                                                 <div className="flex items-center gap-1 h-full">
-                                                                    <button onClick={() => decrementCartItemQuantity(movie.id)}>    
-                                                                        <FontAwesomeIcon icon={faMinus} className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"/>    
+                                                                    <button>    
+                                                                        <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faMinus}/>    
                                                                     </button>
-                                                                    <input type="text" readOnly value={existingCartItemBtn[movie.id]} className="outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent"/>
-                                                                    <button onClick={() => incrementCartItemQuantity(movie.id)}>
+                                                                    <input type="text" className="outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent" value="1"/>
+                                                                    <button>
                                                                         <FontAwesomeIcon icon={faPlus}/>
                                                                     </button>
                                                                 </div>

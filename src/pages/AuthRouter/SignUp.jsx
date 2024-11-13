@@ -160,10 +160,6 @@ function SignUp() {
     }, []);
     
 
-
-    
-
-    // nadi2024 jaco2024 > kouadjav@en.ci
     return (
         <div className='min-h-screen flex items-center justify-center bg-center bg-cover' style={{backgroundImage:`url(${homepagebg})`}}>
             <div className="container mx-auto py-10 px-4 lg:px-0">

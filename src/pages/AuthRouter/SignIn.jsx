@@ -22,6 +22,7 @@ function SignIn() {
 
     // Utiliser useLocalStorage pour stocker le token
     const [token, setToken] = useLocalStorage('token', null);
+    const [expiresAt, setExpiresAt] = useLocalStorage('expires_at', null);
 
     // Fonction de validation
     const enteredDataValidation = () => {
@@ -74,14 +75,14 @@ function SignIn() {
 
             const data = await response.json();
             console.log('Réponse du serveur :', data);
+            console.log('TOKEN du serveur :', data.access_token);
+
 
             if (response.ok) {
                 // Si la réponse est un succès
                 setToken(data.access_token)
+                setExpiresAt(data.expires_at)
                 toast.success(data.message || 'Connexion réussie !');
-                const expiryTime = Date.now() + data.expires_in * 1000; // `expires_in` est la durée en secondes
-                
-                localStorage.setItem('tokenExpiry', expiryTime);
                 navigate('/');
             } else {
                 // Si la réponse est une erreur

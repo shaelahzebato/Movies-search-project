@@ -23,7 +23,7 @@ function MovieDetailsPage() {
     const [loading, setLoading] = useState(false);
     const [favoris, setFavoris] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [existingCartItemBtn, setExistingCartItemBtn] = useState(false);
+    const [existingCartItemBtn, setExistingCartItemBtn] = useState();
 
 
     const navigate = useNavigate();
@@ -179,25 +179,96 @@ function MovieDetailsPage() {
     };
         
     // Fonction pour ajouter au panier
-    const addToCart = async (productId, quantity = 1) => {
-        const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-        })
+    // const addToCart = async (productId, quantity = 1) => {
+    //     const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Authorization': `Bearer ${token}`,
+    //             'Content-Type': 'application/json',
+    //             'Accept': 'application/json',
+    //         },
+    //     })
 
-        const existingItem = await existingCartItem(movieId);
-        if (existingItem) {
-            setExistingCartItemBtn(true);
-            // Si le film existe déjà, on modifie la quantité
-            updateCartQuantity(movieId, existingItem.quantity + 1);
-        } 
-        else {
+    //     const existingItem = await existingCartItem(movieId);
+    //     if (existingItem) {
+    //         setExistingCartItemBtn(true);
+    //         // Si le film existe déjà, on modifie la quantité
+    //         updateCartQuantity(movieId, existingItem.quantity + 1);
+    //     } 
+    //     else {
+    //         try {
+    //             setExistingCartItemBtn(false)
+    //             setLoading(true);
+    //             const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Authorization': `Bearer ${token}`,
+    //                     'Content-Type': 'application/json',
+    //                     'Accept': 'application/json',
+    //                 },
+    //                 body: JSON.stringify({
+    //                     product: {
+    //                         id: productId 
+    //                     },
+    //                     quantity: quantity
+    //                 }),
+    //             });
+
+    //             const data = await response.json();
+                
+    //             if (response.ok) {
+    //                 console.log("dataaaaa : ", data);
+    //                 toast.success(data.message)                    
+    //             } else {
+    //                 console.error("Erreur lors de l'ajout au panier:", data.message);
+    //             }
+    //         }
+    //         catch (error) {
+    //             console.error('Erreur réseau:', error);
+    //         }
+    //         finally {
+    //             setLoading(false);
+    //         }
+    //     }
+    // };
+
+    const loadCartItems = async () => {
+        try {
+            const checkResponse = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                },
+            });
+    
+            const responseMovieInCart = await checkResponse.json();
+            const cartItems = responseMovieInCart.datas;
+
+            // Construire un objet avec les quantités d'articles dans le panier
+            const cartQuantities = cartItems.reduce((acc, item) => {
+                acc[item.product_id] = item.quantity;
+                return acc;
+            }, {});
+
+            setExistingCartItemBtn(cartQuantities);
+        } catch (error) {
+            console.error("Erreur lors du chargement des articles du panier:", error);
+        }
+    };
+    useEffect(() => {
+        loadCartItems();
+    }, [token]);
+    
+    // Fonction d'ajout au panier
+    const addToCart = async (movieId) => {
+        const existingItemQuantity = existingCartItemBtn?.[movieId];
+    
+        if (existingItemQuantity) {
+            // Si le film est déjà dans le panier, on incrémente la quantité
+            updateCartQuantity(movieId, existingItemQuantity + 1);
+        } else {
             try {
-                setExistingCartItemBtn(false)
                 setLoading(true);
                 const response = await fetch(`https://symbian.stvffmn.com/nady/public/api/v1/users/cart`, {
                     method: 'POST',
@@ -206,27 +277,24 @@ function MovieDetailsPage() {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                     },
-                    body: JSON.stringify({
+                    body: JSON.stringify({ 
                         product: {
-                            id: productId 
+                            id: movieId 
                         },
-                        quantity: quantity
+                        quantity: 1    
                     }),
                 });
-
                 const data = await response.json();
-                
+                    
                 if (response.ok) {
-                    console.log("dataaaaa : ", data);
-                    toast.success(data.message)                    
+                    toast.success(data.message);
+                    setExistingCartItemBtn(prev => ({ ...prev, [movieId]: 1 })); // Met à jour le bouton d'ajout
                 } else {
                     console.error("Erreur lors de l'ajout au panier:", data.message);
                 }
-            }
-            catch (error) {
-                console.error('Erreur réseau:', error);
-            }
-            finally {
+            } catch (error) {
+                console.error("Erreur lors de l'ajout de l'article au panier:", error);
+            } finally {
                 setLoading(false);
             }
         }
@@ -248,6 +316,7 @@ function MovieDetailsPage() {
             });
             const data = await putQty.json();
             if (putQty.ok) {
+                loadCartItems()
                 console.log("updateCartQuantity : ", data);
             } else {
                 console.error('Erreur lors de la mise à jour de la quantité:', data.message);
@@ -339,7 +408,12 @@ function MovieDetailsPage() {
                                     <p className="text-sm">{movieDetails?.overview}</p>
                                 </div>
                                 <div className="flex justify-between items-center mt-2 mb-14">
-                                    <span className="text-orange-400 text-2xl font-semibold">${'100'}</span>
+                                    <span className="text-orange-400 text-lg font-semibold">
+                                        ${existingCartItemBtn && movieDetails?.id in existingCartItemBtn
+                                            ? 100 * existingCartItemBtn[movieDetails.id]
+                                            : 100}
+                                    </span>
+                                    {/* <span className="text-orange-400 text-2xl font-semibold">${existingCartItemBtn[movieDetails?.id] ? 100 *  existingCartItemBtn[movieDetails?.id] : 100}</span> */}
                                     <button 
                                         onClick={() => addToCart(movieDetails?.id, 1)} 
                                         className={`flex items-center justify-center gap-2 text-white text-sm transition duration-300 ease-in-out focus:outline-none ${loading ? "bg-orange-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
@@ -352,12 +426,12 @@ function MovieDetailsPage() {
                                                 </div>
                                             ) : (
                                                 <>
-                                                    {existingCartItemBtn ? (
-                                                        <div className="flex items-center gap-1 h-full">
+                                                    {existingCartItemBtn && existingCartItemBtn[movieDetails?.id] ? (
+                                                        <div className="flex items-center gap-1 h-full py-2 px-4">
                                                             <button>    
                                                                 <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faMinus}/>    
                                                             </button>
-                                                            <input type="text" className="outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent" value="1"/>
+                                                            <input type="text" readOnly value={existingCartItemBtn[movieDetails?.id]} className="outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent"/>
                                                             <button>
                                                                 <FontAwesomeIcon icon={faPlus}/>
                                                             </button>
@@ -408,49 +482,49 @@ function MovieDetailsPage() {
                                         </button>
                                     </li>
                                 </ul> */}
-                                <ul className="flex flex-col justify-center gap-4">
+                                <ul className="flex items-center justify-center gap-4">
                                             <li>
                                                 <button onClick={() => toggleFavoris(movieDetails.id)}>
                                                     {
                                                     favoris ?
                                                         <button className='flex items-center bg-green-500'>
-                                                            <span className='bg-green-600 p-2'>
+                                                            <span className='bg-green-600 p-2 rounded-md hover:bg-green-500  transition ease-out duration-300'>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                                                                     <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
                                                                 </svg>
                                                             </span>
-                                                            <span className='uppercase text-sm px-4'>Retirer</span>
+                                                            {/* <span className='uppercase text-sm px-4'>Retirer</span> */}
                                                         </button>
                                                         :
-                                                        <button className='flex items-center bg-red-500'>
-                                                            <span className='bg-red-600 p-2'>
+                                                        <button className='flex items-center bg-red-500 rounded-md mt-2'>
+                                                            <span className='bg-red-600 p-2 rounded-md hover:bg-red-500 transition ease-out duration-300'>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                                                                 </svg>
                                                             </span>
-                                                            <span className='uppercase text-sm px-4'>Ajouter</span>
+                                                            {/* <span className='uppercase text-sm px-4'>Ajouter</span> */}
                                                         </button>
                                                     }
                                                 </button>
                                             </li>
                                             <li>
-                                                <button className='flex items-center bg-blue-400'>
-                                                    <span className='bg-blue-500 p-2'>
+                                                <button className='flex items-center bg-blue-400 rounded-md'>
+                                                    <span className='bg-blue-500 p-2 rounded-md hover:bg-blue-400 transition ease-out duration-300'>
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
                                                         </svg>
                                                     </span>
-                                                    <span className='uppercase text-sm px-4'>Partager</span>
+                                                    {/* <span className='uppercase text-sm px-4'>Partager</span> */}
                                                 </button>
                                             </li>
                                             <li>
-                                                <button className='flex items-center bg-amber-400'>
-                                                    <span className='bg-amber-500 p-2'>
+                                                <button className='flex items-center bg-amber-400 rounded-md'>
+                                                    <span className='bg-amber-500 p-2 rounded-md hover:bg-amber-400 transition ease-out duration-300'>
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                                         </svg>
                                                     </span>
-                                                    <span className='uppercase text-sm px-4'>Télécharger</span>
+                                                    {/* <span className='uppercase text-sm px-4'>Télécharger</span> */}
                                                 </button>
                                             </li>
                                         </ul>
@@ -587,8 +661,8 @@ function MovieDetailsPage() {
                                                             <span className='uppercase text-sm px-4'>Retirer</span>
                                                         </button>
                                                         :
-                                                        <button className='flex items-center bg-red-500'>
-                                                            <span className='bg-red-600 p-2'>
+                                                        <button className='flex items-center bg-red-500 rounded-md mt-[7px]'>
+                                                            <span className='bg-red-600 p-2 rounded-l-md'>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                                                                 </svg>
@@ -599,8 +673,8 @@ function MovieDetailsPage() {
                                                 </button>
                                             </li>
                                             <li>
-                                                <button className='flex items-center bg-blue-400'>
-                                                    <span className='bg-blue-500 p-2'>
+                                                <button className='flex items-center bg-blue-400 rounded-md'>
+                                                    <span className='bg-blue-500 p-2 rounded-l-md'>
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
                                                         </svg>
@@ -609,8 +683,8 @@ function MovieDetailsPage() {
                                                 </button>
                                             </li>
                                             <li>
-                                                <button className='flex items-center bg-amber-400'>
-                                                    <span className='bg-amber-500 p-2'>
+                                                <button className='flex items-center bg-amber-400 rounded-md'>
+                                                    <span className='bg-amber-500 p-2 rounded-l-md'>
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                                         </svg>
@@ -623,7 +697,12 @@ function MovieDetailsPage() {
                                 </div>
                                 <div className="flex items-center gap-6 mt-2">
                                     <div className="bg-white/95 p-2 px-6">
-                                        <span className="text-orange-400 text-lg font-semibold">${'100'}</span>
+                                        {/* <span className="text-orange-400 text-lg font-semibold">${existingCartItemBtn[movieDetails?.id] ? 100 *  existingCartItemBtn[movieDetails?.id] : 100}</span> */}
+                                        <span className="text-orange-400 text-lg font-semibold">
+                                            ${existingCartItemBtn && movieDetails?.id in existingCartItemBtn
+                                                ? 100 * existingCartItemBtn[movieDetails.id]
+                                                : 100}
+                                        </span>
                                     </div>
                                     <button 
                                         onClick={() => addToCart(movieDetails?.id, 1)} 
@@ -637,12 +716,12 @@ function MovieDetailsPage() {
                                                 </div>
                                             ) : (
                                                 <>
-                                                    {existingCartItemBtn ? (
-                                                        <div className="flex items-center gap-1 h-full">
+                                                    {existingCartItemBtn && existingCartItemBtn[movieDetails?.id] ? (
+                                                        <div className="flex items-center gap-1 h-full py-2 px-4">
                                                             <button>    
                                                                 <FontAwesomeIcon className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black" icon={faMinus}/>    
                                                             </button>
-                                                            <input type="text" className="border-y border-x border-gray-200 outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent" value="1"/>
+                                                            <input type="text" readOnly value={existingCartItemBtn[movieDetails?.id]} className="outline-none text-white font-semibold text-lg w-full max-w-[34px] min-w-[24px] placeholder:text-gray-900  text-center bg-transparent"/>
                                                             <button>
                                                                 <FontAwesomeIcon icon={faPlus}/>
                                                             </button>

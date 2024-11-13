@@ -53,3 +53,97 @@ export default WelcomeMessage;
                                                             <span>Panier</span>
                                                         </div>     
                                                     )} */}
+
+
+
+
+
+
+
+
+
+
+
+                                                    /**
+                                                     * import AppRouter from './pages/AppRouter/AppRouter';
+import AuthRouter from './pages/AuthRouter/AuthRouter';
+import toast, { Toaster } from 'react-hot-toast';
+import { useLocalStorage } from "@uidotdev/usehooks"; 
+import { useEffect } from 'react';
+
+function App() {
+
+    // const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+    const [isAuthenticated, setIsAuthenticated] = useLocalStorage('token', null);
+
+    const [token, setToken] = useLocalStorage('token', null);
+    
+    useEffect(() => {
+        // Vérifier l'expiration de la session
+        const checkSessionExpiration = () => {
+            const tokenExpiryTime = localStorage.getItem('tokenExpiry');
+            const currentTime = Date.now();
+
+            if (tokenExpiryTime && currentTime > tokenExpiryTime) {
+                // Si la session est expirée
+                handleSessionExpired();
+            }
+        };
+
+        // Fonction de déconnexion lorsque la session est expirée
+        const handleSessionExpired = () => {
+            setToken(null);
+            setIsAuthenticated(false);
+            toast.error('Votre session a expiré. Veuillez vous reconnecter.', { duration: 5000 });
+        };
+
+        // Vérifier l'expiration toutes les 5 minutes
+        const interval = setInterval(checkSessionExpiration, 5 * 60 * 1000); // 5 minutes
+
+        return () => clearInterval(interval); // Nettoyage lors du démontage
+    }, [token, setToken]);
+
+    const refreshToken = async () => {
+        // const authData = JSON.parse(localStorage.getItem('authData'));
+    
+        try {
+            const response = await fetch('https://symbian.stvffmn.com/nady/public/api/v1/refresh-token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    refresh_token: isAuthenticated,
+                }),
+            });
+    
+            if (!response.ok) {
+                throw new Error("Erreur lors du rafraîchissement du token");
+            }
+    
+            const data = await response.json();
+    
+            // Met à jour le token et le temps d'expiration
+            setIsAuthenticated(isAuthenticated);
+    
+            return data.access_token;
+        } catch (error) {
+            console.error("Échec du rafraîchissement du token:", error);
+            localStorage.removeItem('token'); // Déconnecte l'utilisateur en cas d'erreur
+            window.location.href = '/signin'; // Redirige vers la page de connexion
+            return null;
+        }
+    };
+    
+
+
+    return (
+        <div>
+            <Toaster position="top-right" reverseOrder={false} />
+            {isAuthenticated ? <AppRouter/> : <AuthRouter/>}
+        </div>
+    );
+}
+
+export default App;
+                                                     */
